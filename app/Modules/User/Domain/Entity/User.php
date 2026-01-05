@@ -2,6 +2,8 @@
 
 namespace App\Modules\User\Domain\Entity;
 
+use App\Modules\User\Domain\ValueObject\PasswordHash;
+
 class User
 {
     public function __construct(

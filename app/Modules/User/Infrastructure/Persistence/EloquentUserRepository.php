@@ -4,6 +4,7 @@ namespace App\Modules\User\Infrastructure\Persistence;
 
 use App\Modules\User\Application\Queries\GetUserPagination\PaginationRequest;
 use App\Modules\User\Application\Queries\GetUserPagination\UserSearchRequest;
+use App\Modules\User\Application\UseCase\StoreUser\StoreUserRequest;
 use App\Modules\User\Application\UseCase\UpdateUser\UpdateUserRequest;
 use App\Modules\User\Domain\Dto\GetUserResponse;
 use App\Modules\User\Domain\Dto\UserPaginationResult;
@@ -40,6 +41,22 @@ class EloquentUserRepository implements UserRepositoryInterface
             total: $paginate->total(),
             current_page: $paginate->currentPage(),
             last_page: $paginate->lastPage(),
+        );
+    }
+
+    public function store(StoreUserRequest $request): User
+    {
+        $user = UserModel::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password->value(),
+        ]);
+
+        return new User(
+            id: $user->id,
+            name: $user->name,
+            email: $user->email,
+            email_verified_at: $user->email_verified_at,
         );
     }
 
