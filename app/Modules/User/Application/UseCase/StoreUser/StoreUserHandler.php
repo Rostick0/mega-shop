@@ -11,13 +11,9 @@ class StoreUserHandler
         private UserRepositoryInterface $repository
     ) {}
 
-    public function handle(StoreUserRequest $request): ?GetUserResponse
+    public function handle(StoreUserRequest $request): GetUserResponse
     {
         $user = $this->repository->store($request);
-
-        if (!$user) {
-            return null;
-        }
 
         return new GetUserResponse(
             id: $user->id,
