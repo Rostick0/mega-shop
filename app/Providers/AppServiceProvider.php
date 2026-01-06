@@ -20,6 +20,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\User\Domain\Repositories\UserRepositoryInterface::class,
             \App\Modules\User\Infrastructure\Persistence\EloquentUserRepository::class
         );
+
+        $this->app->bind(
+            \App\Modules\Auth\Application\Entity\PasswordHasherInterface::class,
+            \App\Modules\Auth\Infrastructure\Hashing\LaravelPasswordHasher::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Auth\Application\Entity\TokenServiceInterface::class,
+            \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class
+        );
     }
 
     /**
@@ -27,6 +37,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
+            try {
+                $tokenPayload = \Firebase\JWT\JWT::decode($request->bearerToken(), new \Firebase\JWT\Key(config('jwt.key'), 'HS256'));
+
+                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find($tokenPayload)->first();
+            } catch (\Exception $th) {
+                // Log::error($th);
+                return null;
+            }
+        });
     }
 }

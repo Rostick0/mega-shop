@@ -2,12 +2,11 @@
 
 namespace App\Modules\Auth\Domain\Dto;
 
-use App\Modules\User\Domain\Entity\User;
 
-class AuthToken
+class RefreshToken
 {
     public function __construct(
         public string $token,
-        public User $user
+        public \DateTimeImmutable $time,
     ) {}
 }
