@@ -20,6 +20,7 @@ Route::name('api.')
             // Route::post('/login-from-admin', [AuthController::class, 'loginFromAdmin']);
 
             // 'middleware' => 'jwt'
+            // 'middleware' => 'auth:api'
             Route::group([], function () {
                 Route::post('/logout', [AuthController::class, 'logout']);
                 Route::post('/refresh', [AuthController::class, 'refresh']);
