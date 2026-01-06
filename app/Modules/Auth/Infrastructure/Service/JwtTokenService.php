@@ -5,7 +5,6 @@ namespace App\Modules\Auth\Infrastructure\Service;
 use App\Modules\Auth\Application\Entity\TokenServiceInterface;
 use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
-use App\Modules\User\Domain\Entity\User;
 use Exception;
 use TokenPayload;
 use Firebase\JWT\JWT;
@@ -13,6 +12,10 @@ use Firebase\JWT\Key;
 
 final class JwtTokenService implements TokenServiceInterface
 {
+    public function __construct(
+        private string $jwtSecret
+    ) {}
+
     public function issueAccessToken(int $userId): AccessToken
     {
         $expiresAt = new \DateTimeImmutable('+15 minutes');
@@ -24,7 +27,7 @@ final class JwtTokenService implements TokenServiceInterface
             'type' => 'access',
         ];
 
-        $jwt = JWT::encode($payload, config('jwt.secret'), 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
         return new AccessToken($jwt, $expiresAt);
     }
@@ -39,7 +42,7 @@ final class JwtTokenService implements TokenServiceInterface
             'type' => 'refresh',
         ];
 
-        $jwt = JWT::encode($payload, config('jwt.secret'), 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
         return new RefreshToken($jwt, $expiresAt);
     }
@@ -48,7 +51,7 @@ final class JwtTokenService implements TokenServiceInterface
     {
         $decoded = JWT::decode(
             $token,
-            new Key(config('jwt.secret'), 'HS256')
+            new Key($this->jwtSecret, 'HS256')
         );
 
         if (($decoded->type ?? null) !== 'access') {
@@ -64,7 +67,7 @@ final class JwtTokenService implements TokenServiceInterface
     {
         $decoded = JWT::decode(
             $refreshToken,
-            new Key(config('jwt.secret'), 'HS256')
+            new Key($this->jwtSecret, 'HS256')
         );
 
         if (($decoded->type ?? null) !== 'refresh') {

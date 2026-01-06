@@ -28,8 +28,19 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Modules\Auth\Application\Entity\TokenServiceInterface::class,
-            \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class
+            fn() =>
+            new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
+                config('jwt.secret')
+            )
         );
+
+        // $this->app->bind(
+        //     \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class,
+        //     fn() =>
+        //     new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
+        //         config('jwt.secret')
+        //     )
+        // );
     }
 
     /**
@@ -39,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
             try {
-                $tokenPayload = \Firebase\JWT\JWT::decode($request->bearerToken(), new \Firebase\JWT\Key(config('jwt.key'), 'HS256'));
+                $tokenPayload = \Firebase\JWT\JWT::decode($request->bearerToken() ?? '', new \Firebase\JWT\Key(config('jwt.secret'), 'HS256'));
 
                 return \App\Modules\User\Infrastructure\Eloquent\UserModel::find($tokenPayload)->first();
             } catch (\Exception $th) {
