@@ -34,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
             )
         );
 
+        $this->app->bind(
+            \App\Modules\Auth\Domain\Repositories\AuthRepositoryInterface::class,
+            \App\Modules\Auth\Infrastructure\Persistence\EloquentAuthRepository::class
+        );
+
+
         // $this->app->bind(
         //     \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class,
         //     fn() =>

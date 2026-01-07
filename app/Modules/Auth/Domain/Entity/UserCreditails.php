@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\User\Domain\Entity;
+namespace App\Modules\Auth\Domain\Entity;
 
 use App\Modules\Auth\Domain\ValueObject\PasswordHash;
 

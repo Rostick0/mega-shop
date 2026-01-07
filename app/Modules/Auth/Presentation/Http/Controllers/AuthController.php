@@ -7,7 +7,7 @@ use App\Modules\Auth\Application\Entity\TokenServiceInterface;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\Modules\Auth\Infrastructure\Service\LoginUserService;
-use App\Modules\Auth\Infrastructure\Service\RegistrationUser;
+use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
 use App\Modules\Auth\Presentation\Http\Requests\LoginAuthFormRequest;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
@@ -20,9 +20,9 @@ class AuthController
         public TokenServiceInterface $tokenService
     ) {}
 
-    public function register(RegisgerAuthFormRequest $formRequest, RegistrationUser $registrationUser): JsonResponse
+    public function register(RegisgerAuthFormRequest $formRequest, CreateUser $CreateUser): JsonResponse
     {
-        $user = $registrationUser->handle($formRequest);
+        $user = $CreateUser->handle($formRequest);
 
         $accessToken = $this->tokenService->issueAccessToken($user->id);
         $refreshToken = $this->tokenService->issueRefreshToken($user->id);
@@ -38,24 +38,24 @@ class AuthController
 
     public function login(LoginAuthFormRequest $formRequest, VerifyPasswordService $verifyPasswordService, GetUserByEmailHandler $handler): JsonResponse
     {
-        $user = $handler->handle(new GetUserByEmailQuery($formRequest->input('email')));
+        $authUser = $handler->handle(new GetUserByEmailQuery($formRequest->input('email')));
 
         // if (!$user) {
         //     // return;
         // }
 
-        if ($verifyPasswordService->handle($formRequest, $user->password->value())) {
+        if ($verifyPasswordService->handle($formRequest, $authUser->credentials->password->value())) {
+            
         }
-        // $user = ;
 
-        $accessToken = $this->tokenService->issueAccessToken($user->id);
-        $refreshToken = $this->tokenService->issueRefreshToken($user->id);
+        $accessToken = $this->tokenService->issueAccessToken($authUser->user->id);
+        $refreshToken = $this->tokenService->issueRefreshToken($authUser->user->id);
 
         return new JsonResponse([
             'data' => new PayloadAuthRequest(
                 accessToken: $accessToken,
                 refreshToken: $refreshToken,
-                user: $user,
+                user: $authUser->user,
             ),
         ]);
     }

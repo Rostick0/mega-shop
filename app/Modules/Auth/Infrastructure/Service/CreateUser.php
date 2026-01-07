@@ -9,7 +9,7 @@ use App\Modules\User\Application\UseCase\StoreUser\StoreUserHandler;
 use App\Modules\User\Application\UseCase\StoreUser\StoreUserRequest;
 use App\Modules\User\Domain\Dto\GetUserResponse;
 
-final readonly class RegistrationUser
+final readonly class CreateUser
 {
     public function __construct(
         private PasswordHasherInterface $passwordHasher,

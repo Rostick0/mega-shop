@@ -2,8 +2,10 @@
 
 namespace App\Modules\Auth\Presentation\Http\Requests;
 
+use App\Modules\User\Infrastructure\Eloquent\UserModel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class RegisgerAuthFormRequest extends FormRequest
 {
@@ -24,7 +26,7 @@ class RegisgerAuthFormRequest extends FormRequest
     {
         return [
             'name'       => ['sometimes', 'nullable', 'string', 'max:255'],
-            'email'      => ['required', 'string', 'email', 'min:1', 'max:100'],
+            'email'      => ['required', 'string', 'email', 'min:1', 'max:100', Rule::unique(UserModel::class, 'email')],
             'password'   => ['required', 'nullable', 'string', 'min:8', 'max:30'],
         ];
     }

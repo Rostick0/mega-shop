@@ -2,9 +2,8 @@
 
 namespace App\Modules\Auth\Application\Queries\GetUserByEmail;
 
+use App\Modules\Auth\Domain\Dto\AuthUser;
 use App\Modules\Auth\Domain\Repositories\AuthRepositoryInterface;
-use App\Modules\User\Domain\Dto\GetUserResponse;
-use App\Modules\User\Domain\Entity\UserCreditails;
 
 class GetUserByEmailHandler
 {
@@ -12,7 +11,7 @@ class GetUserByEmailHandler
         private AuthRepositoryInterface $repository
     ) {}
 
-    public function handle(GetUserByEmailQuery $query): ?UserCreditails
+    public function handle(GetUserByEmailQuery $query): ?AuthUser
     {
         $user = $this->repository->getByEmail($query->email);
 
