@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Infrastructure\Hashing;
 
-use App\Modules\Auth\Application\Entity\PasswordHasherInterface;
+use App\Modules\Auth\Application\Contract\PasswordHasherInterface;
 use Illuminate\Support\Facades\Hash;
 
 class LaravelPasswordHasher implements PasswordHasherInterface

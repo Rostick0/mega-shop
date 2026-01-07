@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Infrastructure\Service;
 
-use App\Modules\Auth\Application\Entity\PasswordHasherInterface;
+use App\Modules\Auth\Application\Contract\PasswordHasherInterface;
 use App\Modules\Auth\Domain\ValueObject\PasswordHash;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
 use App\Modules\User\Application\UseCase\StoreUser\StoreUserHandler;

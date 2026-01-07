@@ -2,8 +2,9 @@
 
 namespace App\Modules\Auth\Presentation\Http\Controllers;
 
-use App\Modules\Auth\Application\Entity\PayloadAuthRequest;
-use App\Modules\Auth\Application\Entity\TokenServiceInterface;
+use App\Modules\Auth\Application\Contract\PayloadAuthRequest;
+use App\Modules\Auth\Application\Contract\TokenServiceInterface;
+use App\Modules\Auth\Application\Queries\GetCurrentUserQuery\GetCurrentUserQueryHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\Modules\Auth\Infrastructure\Service\LoginUserService;
@@ -57,17 +58,8 @@ class AuthController
         ]);
     }
 
-    public function me(): JsonResponse
+    public function me(GetCurrentUserQueryHandler $handler): JsonResponse
     {
-        $user = Auth::user();
-
-        return new JsonResponse([
-            'data' => new GetUserResponse(
-                id: $user->id,
-                name: $user->name,
-                email: $user->email,
-                email_verified_at: $user->email_verified_at,
-            ),
-        ]);
+        return new JsonResponse($handler->handle());
     }
 }

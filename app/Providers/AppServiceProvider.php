@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Modules\Auth\Infrastructure\Service\JwtTokenService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,12 +23,12 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Modules\Auth\Application\Entity\PasswordHasherInterface::class,
+            \App\Modules\Auth\Application\Contract\PasswordHasherInterface::class,
             \App\Modules\Auth\Infrastructure\Hashing\LaravelPasswordHasher::class
         );
 
         $this->app->bind(
-            \App\Modules\Auth\Application\Entity\TokenServiceInterface::class,
+            \App\Modules\Auth\Application\Contract\TokenServiceInterface::class,
             fn() =>
             new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
                 config('jwt.secret')
@@ -37,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Modules\Auth\Domain\Repositories\AuthRepositoryInterface::class,
             \App\Modules\Auth\Infrastructure\Persistence\EloquentAuthRepository::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Auth\Application\Contract\CurrentUserProviderInterface::class,
+            \App\Modules\Auth\Infrastructure\Provider\LaravelCurrentUserProvider::class
         );
 
 
@@ -56,10 +62,11 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
             try {
-                $tokenPayload = \Firebase\JWT\JWT::decode($request->bearerToken() ?? '', new \Firebase\JWT\Key(config('jwt.secret'), 'HS256'));
+                $jwt = new JwtTokenService(config('jwt.secret'));
 
-                // dd($tokenPayload);
-                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find((int) $tokenPayload->sub)->first();
+                $tokenPayload = $jwt->parseAccessToken($request->bearerToken() ?? '');
+
+                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find((int) $tokenPayload->userId)->first();
             } catch (\Exception $th) {
                 // Log::error($th);
                 return null;

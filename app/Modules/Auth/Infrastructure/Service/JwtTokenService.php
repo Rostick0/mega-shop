@@ -2,11 +2,11 @@
 
 namespace App\Modules\Auth\Infrastructure\Service;
 
-use App\Modules\Auth\Application\Entity\TokenServiceInterface;
+use App\Modules\Auth\Application\Contract\TokenServiceInterface;
 use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
+use App\Modules\Auth\Domain\Dto\TokenPayload;
 use Exception;
-use TokenPayload;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
