@@ -40,12 +40,8 @@ class AuthController
     {
         $authUser = $handler->handle(new GetUserByEmailQuery($formRequest->input('email')));
 
-        // if (!$user) {
-        //     // return;
-        // }
-
-        if ($verifyPasswordService->handle($formRequest, $authUser->credentials->password->value())) {
-            
+        if (!$authUser->user || !$verifyPasswordService->handle($formRequest, $authUser->credentials->password->value())) {
+            return new JsonResponse(['message' => 'Invalid credentials'], 401);
         }
 
         $accessToken = $this->tokenService->issueAccessToken($authUser->user->id);
