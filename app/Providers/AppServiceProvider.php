@@ -59,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 $tokenPayload = \Firebase\JWT\JWT::decode($request->bearerToken() ?? '', new \Firebase\JWT\Key(config('jwt.secret'), 'HS256'));
 
                 // dd($tokenPayload);
-                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find($tokenPayload)->first();
+                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find((int) $tokenPayload->sub)->first();
             } catch (\Exception $th) {
                 // Log::error($th);
                 return null;

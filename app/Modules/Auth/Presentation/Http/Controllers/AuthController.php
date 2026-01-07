@@ -11,6 +11,7 @@ use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
 use App\Modules\Auth\Presentation\Http\Requests\LoginAuthFormRequest;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
+use App\Modules\User\Domain\Dto\GetUserResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,9 +57,17 @@ class AuthController
         ]);
     }
 
-    // public function me() {
+    public function me(): JsonResponse
+    {
+        $user = Auth::user();
 
-    //     dd(Auth::user());
-    //     return 5;
-    // }
+        return new JsonResponse([
+            'data' => new GetUserResponse(
+                id: $user->id,
+                name: $user->name,
+                email: $user->email,
+                email_verified_at: $user->email_verified_at,
+            ),
+        ]);
+    }
 }
