@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Infrastructure\Service;
 
 use App\Modules\Auth\Application\Contract\TokenServiceInterface;
+use App\Modules\Auth\Domain\Dto\AccessAndRefreshTokens;
 use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
 use App\Modules\Auth\Domain\Dto\TokenPayload;
@@ -42,6 +43,7 @@ final class JwtTokenService implements TokenServiceInterface
             'type' => 'refresh',
         ];
 
+
         $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
         return new RefreshToken($jwt, $expiresAt);
@@ -63,7 +65,7 @@ final class JwtTokenService implements TokenServiceInterface
         );
     }
 
-    public function refresh(string $refreshToken): AccessToken
+    public function refresh(string $refreshToken): AccessAndRefreshTokens
     {
         $decoded = JWT::decode(
             $refreshToken,
@@ -74,8 +76,9 @@ final class JwtTokenService implements TokenServiceInterface
             throw new Exception('Token is invalid');
         }
 
-        return $this->issueAccessToken(
-            (int) $decoded->sub
+        return new AccessAndRefreshTokens(
+            $this->issueAccessToken((int) $decoded->sub),
+            $this->issueRefreshToken((int) $decoded->sub)
         );
     }
 }
