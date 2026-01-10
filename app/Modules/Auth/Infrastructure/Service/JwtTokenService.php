@@ -2,10 +2,12 @@
 
 namespace App\Modules\Auth\Infrastructure\Service;
 
+use App\Modules\Auth\Application\Contract\GenerateUuidInterface;
 use App\Modules\Auth\Application\Contract\TokenServiceInterface;
 use App\Modules\Auth\Domain\Dto\AccessAndRefreshTokens;
 use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
+use App\Modules\Auth\Domain\Dto\RefreshTokenPayload;
 use App\Modules\Auth\Domain\Dto\TokenPayload;
 use Exception;
 use Firebase\JWT\JWT;
@@ -14,7 +16,8 @@ use Firebase\JWT\Key;
 final class JwtTokenService implements TokenServiceInterface
 {
     public function __construct(
-        private string $jwtSecret
+        private string $jwtSecret,
+        private GenerateUuidInterface $generateUuid,
     ) {}
 
     public function issueAccessToken(int $userId): AccessToken
@@ -37,7 +40,10 @@ final class JwtTokenService implements TokenServiceInterface
     {
         $expiresAt = new \DateTimeImmutable('+30 days');
 
+        $jti = $this->generateUuid->handle();
+
         $payload = [
+            'jti' => $jti,
             'sub' => $userId,
             'exp' => $expiresAt->getTimestamp(),
             'type' => 'refresh',
@@ -46,7 +52,7 @@ final class JwtTokenService implements TokenServiceInterface
 
         $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
-        return new RefreshToken($jwt, $expiresAt);
+        return new RefreshToken($jwt, $jti, $expiresAt);
     }
 
     public function parseAccessToken(string $token): TokenPayload
@@ -65,10 +71,10 @@ final class JwtTokenService implements TokenServiceInterface
         );
     }
 
-    public function refresh(string $refreshToken): AccessAndRefreshTokens
+    public function parseRefreshToken(string $token): RefreshTokenPayload
     {
         $decoded = JWT::decode(
-            $refreshToken,
+            $token,
             new Key($this->jwtSecret, 'HS256')
         );
 
@@ -76,9 +82,19 @@ final class JwtTokenService implements TokenServiceInterface
             throw new Exception('Token is invalid');
         }
 
+        return new RefreshTokenPayload(
+            userId: (int) $decoded->sub,
+            jti: (string) $decoded->jti,
+        );
+    }
+
+    public function refresh(string $refreshToken): AccessAndRefreshTokens
+    {
+        $decoded = $this->parseRefreshToken($refreshToken);
+
         return new AccessAndRefreshTokens(
-            $this->issueAccessToken((int) $decoded->sub),
-            $this->issueRefreshToken((int) $decoded->sub)
+            $this->issueAccessToken((int) $decoded->userId),
+            $this->issueRefreshToken((int) $decoded->userId)
         );
     }
 }

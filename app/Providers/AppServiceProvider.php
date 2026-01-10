@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Modules\Auth\Infrastructure\Persistence\IlluminateFacadeGenerateUuid;
 use App\Modules\Auth\Infrastructure\Service\JwtTokenService;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +32,8 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\Auth\Application\Contract\TokenServiceInterface::class,
             fn() =>
             new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
-                config('jwt.secret')
+                config('jwt.secret'),
+                new IlluminateFacadeGenerateUuid()
             )
         );
 
@@ -45,6 +47,20 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\Auth\Infrastructure\Provider\LaravelCurrentUserProvider::class
         );
 
+        $this->app->bind(
+            \App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface::class,
+            \App\Modules\Auth\Infrastructure\Persistence\EloquentRefreshTokenRepository::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
+            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
+            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
+        );
 
         // $this->app->bind(
         //     \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class,
@@ -62,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
             try {
-                $jwt = new JwtTokenService(config('jwt.secret'));
+                $jwt = new JwtTokenService(config('jwt.secret'), new IlluminateFacadeGenerateUuid());
 
                 $tokenPayload = $jwt->parseAccessToken($request->bearerToken() ?? '');
 

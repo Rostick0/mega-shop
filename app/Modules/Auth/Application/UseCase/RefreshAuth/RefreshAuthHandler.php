@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Auth\Application\UseCase\RefreshToken;
+namespace App\Modules\Auth\Application\UseCase\RefreshAuth;
 
 use App\Modules\Auth\Application\Contract\TokenServiceInterface;
 use App\Modules\Auth\Domain\Dto\AccessAndRefreshTokens;
 
-class RefreshTokenHandler
+class RefreshAuthHandler
 {
     public function __construct(
         private TokenServiceInterface $repository

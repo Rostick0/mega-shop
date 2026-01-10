@@ -7,6 +7,7 @@ class RefreshToken
 {
     public function __construct(
         public string $token,
+        public string $jti,
         public \DateTimeImmutable $time,
     ) {}
 }

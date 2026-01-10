@@ -4,32 +4,46 @@ namespace App\Modules\Auth\Presentation\Http\Controllers;
 
 use App\Modules\Auth\Application\Contract\PayloadAuthRequest;
 use App\Modules\Auth\Application\Contract\TokenServiceInterface;
+use App\Modules\Auth\Application\Contract\TransactionInterface;
 use App\Modules\Auth\Application\Queries\GetCurrentUserQuery\GetCurrentUserQueryHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailQuery;
-use App\Modules\Auth\Application\UseCase\RefreshToken\RefreshTokenHandler;
-use App\Modules\Auth\Infrastructure\Service\LoginUserService;
+use App\Modules\Auth\Application\UseCase\RefreshAuth\RefreshAuthHandler;
+use App\Modules\Auth\Application\UseCase\StoreRefreshToken\StoreRefreshTokenRequest;
+use App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
 use App\Modules\Auth\Presentation\Http\Requests\LoginAuthFormRequest;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
-use App\Modules\User\Domain\Dto\GetUserResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AuthController
 {
     public function __construct(
-        public TokenServiceInterface $tokenService
+        public TokenServiceInterface $tokenService,
+        public RefreshTokenRepositoryInterface $refreshTokenRepository,
+        public TransactionInterface $transaction
     ) {}
 
-    public function register(RegisgerAuthFormRequest $formRequest, CreateUser $CreateUser): JsonResponse
+    public function register(RegisgerAuthFormRequest $formRequest, CreateUser $createUser,): JsonResponse
     {
-        $user = $CreateUser->handle($formRequest);
+        $this->transaction->beginTransaction();
+
+        $user = $createUser->handle($formRequest);
 
         $accessToken = $this->tokenService->issueAccessToken($user->id);
         $refreshToken = $this->tokenService->issueRefreshToken($user->id);
+
+        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+            jti: $refreshToken->jti,
+            // jti: (string) Str::uuid(),
+            user_id: $user->id,
+            expires_at: $refreshToken->time,
+        ));
+
+        $this->transaction->commit();
 
         return new JsonResponse([
             'data' => new PayloadAuthRequest(
@@ -51,6 +65,12 @@ class AuthController
         $accessToken = $this->tokenService->issueAccessToken($authUser->user->id);
         $refreshToken = $this->tokenService->issueRefreshToken($authUser->user->id);
 
+        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+            jti: $refreshToken->jti,
+            user_id: $authUser->user->id,
+            expires_at: $refreshToken->time,
+        ));
+
         return new JsonResponse([
             'data' => new PayloadAuthRequest(
                 accessToken: $accessToken,
@@ -60,11 +80,32 @@ class AuthController
         ]);
     }
 
-    public function refresh(Request $request, RefreshTokenHandler $handler): JsonResponse
+    public function refresh(Request $request, RefreshAuthHandler $handler): JsonResponse
     {
 
         $token = str_replace('Bearer ', '', $request->header('Authorization'));
+
+        $oldToken = $this->tokenService->parseRefreshToken($token);
+
+        $refreshToken = $this->refreshTokenRepository->getByJti($oldToken->jti);
+
+        if ($refreshToken->isExpired(new \DateTimeImmutable) || $refreshToken->isRevoked()) {
+            return new JsonResponse(['message' => 'Invalid token'], 403);
+        }
+
         $tokens = $handler->handle($token);
+
+        $this->transaction->beginTransaction();
+
+        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+            jti: $tokens->refreshToken->jti,
+            user_id: $refreshToken->user_id,
+            expires_at: $tokens->refreshToken->time,
+        ));
+
+        $this->refreshTokenRepository->revoke($oldToken->jti);
+
+        $this->transaction->commit();
 
         return new JsonResponse([
             'data' => $tokens
