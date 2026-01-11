@@ -15,10 +15,8 @@ use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
 use App\Modules\Auth\Presentation\Http\Requests\LoginAuthFormRequest;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
-use App\Modules\User\Application\UseCase\RevokeRefreshToken\RevokeRefreshTokenHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class AuthController
 {
