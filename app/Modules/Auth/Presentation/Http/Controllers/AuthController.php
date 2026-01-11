@@ -15,6 +15,7 @@ use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
 use App\Modules\Auth\Presentation\Http\Requests\LoginAuthFormRequest;
 use App\Modules\Auth\Presentation\Http\Requests\RegisgerAuthFormRequest;
+use App\Modules\User\Application\UseCase\RevokeRefreshToken\RevokeRefreshTokenHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -82,7 +83,6 @@ class AuthController
 
     public function refresh(Request $request, RefreshAuthHandler $handler): JsonResponse
     {
-
         $token = str_replace('Bearer ', '', $request->header('Authorization'));
 
         $oldToken = $this->tokenService->parseRefreshToken($token);
@@ -109,6 +109,24 @@ class AuthController
 
         return new JsonResponse([
             'data' => $tokens
+        ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $token = str_replace('Bearer ', '', $request->header('Authorization'));
+
+        $oldToken = $this->tokenService->parseRefreshToken($token);
+
+        $refreshToken = $this->refreshTokenRepository->getByJti($oldToken->jti);
+
+        if ($refreshToken->isExpired(new \DateTimeImmutable) || $refreshToken->isRevoked()) {
+            return new JsonResponse(['message' => 'Invalid token'], 403);
+        }
+        $this->refreshTokenRepository->revoke($oldToken->jti);
+
+        return new JsonResponse([
+            'message' => 'success'
         ]);
     }
 
