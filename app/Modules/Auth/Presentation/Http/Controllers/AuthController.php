@@ -9,7 +9,7 @@ use App\Modules\Auth\Application\Queries\GetCurrentUserQuery\GetCurrentUserQuery
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\Modules\Auth\Application\UseCase\RefreshAuth\RefreshAuthHandler;
-use App\Modules\Auth\Application\UseCase\StoreRefreshToken\StoreRefreshTokenRequest;
+use App\Modules\Auth\Domain\Entity\RefreshToken;
 use App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Service\CreateUser;
 use App\Modules\Auth\Infrastructure\Service\VerifyPasswordService;
@@ -35,9 +35,8 @@ class AuthController
         $accessToken = $this->tokenService->issueAccessToken($user->id);
         $refreshToken = $this->tokenService->issueRefreshToken($user->id);
 
-        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+        $this->refreshTokenRepository->store(new RefreshToken(
             jti: $refreshToken->jti,
-            // jti: (string) Str::uuid(),
             user_id: $user->id,
             expires_at: $refreshToken->time,
         ));
@@ -64,7 +63,7 @@ class AuthController
         $accessToken = $this->tokenService->issueAccessToken($authUser->user->id);
         $refreshToken = $this->tokenService->issueRefreshToken($authUser->user->id);
 
-        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+        $this->refreshTokenRepository->store(new RefreshToken(
             jti: $refreshToken->jti,
             user_id: $authUser->user->id,
             expires_at: $refreshToken->time,
@@ -95,7 +94,7 @@ class AuthController
 
         $this->transaction->beginTransaction();
 
-        $this->refreshTokenRepository->store(new StoreRefreshTokenRequest(
+        $this->refreshTokenRepository->store(new RefreshToken(
             jti: $tokens->refreshToken->jti,
             user_id: $refreshToken->user_id,
             expires_at: $tokens->refreshToken->time,

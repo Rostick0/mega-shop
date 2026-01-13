@@ -5,7 +5,7 @@ namespace App\Modules\Auth\Domain\Entity;
 class RefreshToken
 {
     public function __construct(
-        public readonly int $id,
+        public readonly ?int $id = null,
         public readonly string $jti,
         public readonly int $user_id,
         public readonly \DateTimeImmutable $expires_at,
