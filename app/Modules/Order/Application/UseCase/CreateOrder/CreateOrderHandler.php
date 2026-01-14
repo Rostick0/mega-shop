@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Modules\Order\Application\UseCase\CheckoutCart;
+namespace App\Modules\Order\Application\UseCase\CreateOrder;
 
 use App\Modules\Auth\Application\Contract\CurrentUserProviderInterface;
+use App\Modules\Order\Domain\Dto\CreateOrderCommand;
 use App\Modules\Order\Domain\Entity\Order;
 use App\Modules\Order\Domain\Repositories\OrderRepositoryInterface;
 
-class CreateOrder
+class CreateOrderHandler
 {
     public function __construct(
         private OrderRepositoryInterface $orderRepository,

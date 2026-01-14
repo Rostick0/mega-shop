@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
+use App\Modules\Cart\Presentation\Http\Controllers\CartController;
 use App\Modules\Product\Presentation\Http\Controllers\ProductController;
 // use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
 use App\Modules\User\Presentation\Http\Controllers\UserController;
@@ -16,7 +17,7 @@ Route::name('api.')
     ->group(function () {
         Route::group(['prefix' => 'auth'], function () {
             Route::post('/login', [AuthController::class, 'login'])
-            // ->middleware('throttle:5,1')
+                // ->middleware('throttle:5,1')
             ;
             Route::post('/register', [AuthController::class, 'register']);
             // Route::post('/login-from-admin', [AuthController::class, 'loginFromAdmin']);
@@ -32,4 +33,5 @@ Route::name('api.')
 
         Route::apiResource('users', UserController::class)->except('store');
         Route::apiResource('products', ProductController::class)->only('index', 'show');
+        Route::apiResource('carts', CartController::class)->only('index');
     });
