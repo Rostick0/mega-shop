@@ -39,6 +39,7 @@ class CacheCartRepository implements CartRepositoryInterface
 
         return $this->cartMapper->fromArray(
             json_decode($cart),
+            json_decode($cartItems),
         );
     }
 
@@ -58,7 +59,7 @@ class CacheCartRepository implements CartRepositoryInterface
 
         Cache::set(
             $keyCartItems,
-            json_encode($this->cartItemMapper->toArray($cart)),
+            json_encode($this->cartItemMapper->toArray($cart->items())),
             60 * 60 * 24
         );
 

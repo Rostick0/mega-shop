@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Modules\Cart\Infrastructure\Mapper;
+namespace App\Modules\Order\Infrastructure\Mapper;
 
-use App\Modules\Cart\Domain\Entity\CartItem;
+use App\Modules\Order\Domain\Entity\OrderItem;
 
-final class CartItemMapper
+final class OrderItemMapper
 {
     /**
-     * @param CartItem[] $cartItems
+     * @param OrderItem[] $cart
      * @return array
      */
     public function toArray(array $cartItems): array
     {
-        return array_map(fn($item) => [
+        return array_map(fn(OrderItem $item) => [
+            'order_id' => $item->order_id,
             'product_id' => $item->product_id,
             'title_snapshot' => $item->title_snapshot,
             'price_snapshot' => $item->price_snapshot,
@@ -22,13 +23,14 @@ final class CartItemMapper
 
     /**
      * @param array
-     * @return CartItem[]
+     * @return OrderItem[]
      */
     public function fromArray(array $items): array
     {
         return array_map(
-            fn($item) => new CartItem(
-                cart_id: $item['cart_id'],
+            fn($item) => new OrderItem(
+                id: $item['id'] ?? null,
+                order_id: $item['order_id'],
                 product_id: $item['product_id'],
                 title_snapshot: $item['title_snapshot'],
                 price_snapshot: $item['price_snapshot'],

@@ -5,6 +5,8 @@ namespace App\Modules\Order\Infrastructure\Persistence;
 use App\Modules\Order\Domain\Entity\Order;
 use App\Modules\Order\Domain\Repositories\OrderRepositoryInterface;
 use App\Modules\Order\Infrastructure\Eloquent\OrderModel;
+use App\Modules\Order\Infrastructure\Mapper\OrderItemMapper;
+use App\Modules\Order\Infrastructure\Mapper\OrderMapper;
 
 // use App\Modules\Product\Application\Queries\GetProductPagination\PaginationRequest;
 // use App\Modules\Product\Application\Queries\GetProductPagination\ProductSearchRequest;
@@ -17,6 +19,10 @@ use App\Modules\Order\Infrastructure\Eloquent\OrderModel;
 
 class EloquentOrderRepository implements OrderRepositoryInterface
 {
+    public function __construct(
+        public OrderMapper $orderMapper,
+        public OrderItemMapper $orderItemMapper
+    ) {}
     //  public function getById(int $id): ?Order;
     // public function store(Order $order): Order;
     // public function index()
@@ -59,7 +65,7 @@ class EloquentOrderRepository implements OrderRepositoryInterface
                 'title_snapshot' => $el->title_snapshot,
                 'quantity' => $el->quantity,
             ],
-            $order->items
+            $order->items()
         ));
 
         return new Order(
@@ -69,7 +75,10 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             email: $orderModel->email,
             amount: $orderModel->amount,
             status: $orderModel->status,
-            items: $orderModel->orderItems(),
+            items: array_map(
+                fn($item) => $this->orderItemMapper->fromArray($item),
+                $orderModel->orderItems()
+            ),
         );
     }
 }
