@@ -11,6 +11,6 @@ interface OrderRepositoryInterface
 {
     // public function getList(?string $title, int $limit, int $offset): array;
     // public function paginate(PaginationRequest $paginationRequest, ProductSearchRequest $productSearchRequest): OrderPaginationResult;
-    public function getById(int $id): ?Order;
+    // public function getById(int $id): ?Order;
     public function store(Order $order): Order;
 }

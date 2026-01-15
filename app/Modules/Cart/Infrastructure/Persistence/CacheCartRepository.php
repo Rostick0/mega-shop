@@ -4,8 +4,11 @@ namespace App\Modules\Product\Infrastructure\Persistence;
 
 use App\Modules\Cart\Domain\Entity\Cart;
 use App\Modules\Cart\Domain\Repositories\CartRepositoryInterface;
+use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
 use App\Modules\Cart\Infrastructure\Mapper\CartMapper;
+use App\Modules\Cart\Infrastructure\Mapper\CartItemMapper;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 // use App\Modules\Product\Application\Queries\GetProductPagination\PaginationRequest;
 // use App\Modules\Product\Application\Queries\GetProductPagination\ProductSearchRequest;
@@ -19,31 +22,43 @@ use Illuminate\Support\Facades\Cache;
 class CacheCartRepository implements CartRepositoryInterface
 {
     public function __construct(
-        public CartMapper $cartMapper
+        public CartMapper $cartMapper,
+        public CartItemMapper $cartItemMapper,
     ) {}
 
 
-    public function getActiveForUser(int $userId): Cart
+    public function getActive(CartOwner $cartOwner): Cart
     {
-        $keyCart = "cart:{$userId}";
-        $keyCarItems = "cart:{$userId}:items";
+        $cartOwnerVal = $cartOwner->value() . '.' . $cartOwner->type();
+
+        $keyCart = "cart:{$cartOwnerVal}";
+        $keyCartItems = "cart:{$cartOwnerVal}:items";
 
         $cart = Cache::get($keyCart);
-        $cartItems = Cache::get($keyCarItems);
+        $cartItems = Cache::get($keyCartItems);
 
         return $this->cartMapper->fromArray(
             json_decode($cart),
-            json_decode($cartItems)
         );
     }
 
     public function store(Cart $cart): Cart
     {
-        $key = "cart:{$cart->user_id}";
+        $cartOwner = $cart->owner();
+
+        $cartOwnerVal = $cartOwner->value() . '.' . $cartOwner->type();
+        $keyCart = "cart:{$cartOwnerVal}";
+        $keyCartItems = "cart:{$cartOwnerVal}:items";
 
         Cache::set(
-            $key,
+            $keyCart,
             json_encode($this->cartMapper->toArray($cart)),
+            60 * 60 * 24
+        );
+
+        Cache::set(
+            $keyCartItems,
+            json_encode($this->cartItemMapper->toArray($cart)),
             60 * 60 * 24
         );
 

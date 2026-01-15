@@ -23,7 +23,8 @@ class CreateOrderHandler
         $order = new Order(
             id: null,
             title: "Заказ номер ",
-            user_id: $this->currentUserProvider->get()->id,
+            user_id: $this->currentUserProvider->get()->id ?? null,
+            email: $command->email,
             amount: null,
             status: null,
             items: $orderItems,
