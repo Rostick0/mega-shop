@@ -10,12 +10,22 @@ class Cart
      * @param CartItem[] $items
      */
     public function __construct(
-        public readonly ?int $id = null,
+        private ?string $id = null,
         public readonly CartOwner $owner,
         private array $items = [],
     ) {}
 
-    public function owner(): CartOwner
+    public function getId(): string|null
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getOwner(): CartOwner
     {
         return $this->owner;
     }
@@ -43,7 +53,7 @@ class Cart
     /**
      * @return CartItem[]
      */
-    public function items(): array
+    public function getItems(): array
     {
         return $this->items;
     }

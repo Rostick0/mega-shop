@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Modules\Cart\Application\GetActiveForUser;
+namespace App\Modules\Cart\Application\Queries\GetActiveForUser;
 
-use App\Modules\Auth\Application\Contract\CurrentUserProviderInterface;
 use App\Modules\Cart\Domain\Entity\Cart;
 use App\Modules\Cart\Domain\Repositories\CartRepositoryInterface;
 use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Cart\Domain\ValueObject\CartOwner;
+namespace App\Modules\Order\Domain\ValueObject\CartOwner;
 
-final class SessionOwner extends CartOwner
+final class SessionOwner implements CartOwner
 {
     public function __construct(private string $sessionId) {}
 

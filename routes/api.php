@@ -2,8 +2,8 @@
 
 use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
 use App\Modules\Cart\Presentation\Http\Controllers\CartController;
+use App\Modules\Order\Presentation\Http\Controllers\OrderConroller;
 use App\Modules\Product\Presentation\Http\Controllers\ProductController;
-// use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
 use App\Modules\User\Presentation\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,7 +13,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::name('api.')
-    ->middleware('api')
+    ->middleware(['api'])
     ->group(function () {
         Route::group(['prefix' => 'auth'], function () {
             Route::post('/login', [AuthController::class, 'login'])
@@ -34,4 +34,5 @@ Route::name('api.')
         Route::apiResource('users', UserController::class)->except('store');
         Route::apiResource('products', ProductController::class)->only('index', 'show');
         Route::apiResource('carts', CartController::class)->only('index');
+        Route::apiResource('orders', OrderConroller::class)->only('store');
     });

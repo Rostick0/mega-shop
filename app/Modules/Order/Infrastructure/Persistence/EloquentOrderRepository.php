@@ -58,14 +58,14 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             'status' => $order->status,
         ]);
 
-        $orderModel->orderItems()->createMany(array_map(
+        $orderModel->ordergetItems()->createMany(array_map(
             fn($el) => [
                 'product_id' => $el->product_id,
                 'price_snapshot' => $el->price_snapshot,
                 'title_snapshot' => $el->title_snapshot,
                 'quantity' => $el->quantity,
             ],
-            $order->items()
+            $order->getItems()
         ));
 
         return new Order(
@@ -77,7 +77,7 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             status: $orderModel->status,
             items: array_map(
                 fn($item) => $this->orderItemMapper->fromArray($item),
-                $orderModel->orderItems()
+                $orderModel->ordergetItems()
             ),
         );
     }

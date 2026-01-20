@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Cart\Infrastructure\Adapter;
+namespace App\Modules\Order\Infrastructure\Adapter;
 
-use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
-use App\Modules\Cart\Domain\ValueObject\CartOwner\SessionOwner;
-use App\Modules\Cart\Domain\ValueObject\CartOwner\UserOwner;
+use App\Modules\Order\Domain\ValueObject\CartOwner\CartOwner;
+use App\Modules\Order\Domain\ValueObject\CartOwner\SessionOwner;
+use App\Modules\Order\Domain\ValueObject\CartOwner\UserOwner;
 
 class CartOwnerResolver
 {

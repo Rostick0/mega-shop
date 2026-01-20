@@ -10,21 +10,21 @@ final class CartMapper
     public function toArray(Cart $cart): array
     {
         return [
-            'id' => $cart,
-            'user_id' => $cart,
+            'id' => $cart->getId(),
+            'owner' => $cart->getOwner(),
         ];
     }
 
     /**
      * @param array $data
-     * @param CartItem $items
      * @return Cart
      */
-    public function fromArray(array $data, array $items = []): Cart
+    public function fromArray(array $data): Cart
     {
         $cart = new Cart(
-            $data['id'],
-            $data['user_id']
+            id: $data['id'],
+            owner: $data['owner'],
+            items: $data['items'] ?? [],
         );
 
         return $cart;

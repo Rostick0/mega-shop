@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Modules\Product\Infrastructure\Persistence;
+namespace App\Modules\Cart\Infrastructure\Repository;
 
 use App\Modules\Cart\Domain\Entity\Cart;
+use App\Modules\Cart\Domain\Entity\CartItem;
 use App\Modules\Cart\Domain\Repositories\CartRepositoryInterface;
 use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
 use App\Modules\Cart\Infrastructure\Mapper\CartMapper;
@@ -29,7 +30,7 @@ class CacheCartRepository implements CartRepositoryInterface
 
     public function getActive(CartOwner $cartOwner): Cart
     {
-        $cartOwnerVal = $cartOwner->value() . '.' . $cartOwner->type();
+        $cartOwnerVal = $cartOwner->__toString();
 
         $keyCart = "cart:{$cartOwnerVal}";
         $keyCartItems = "cart:{$cartOwnerVal}:items";
@@ -37,19 +38,36 @@ class CacheCartRepository implements CartRepositoryInterface
         $cart = Cache::get($keyCart);
         $cartItems = Cache::get($keyCartItems);
 
-        return $this->cartMapper->fromArray(
-            json_decode($cart),
-            json_decode($cartItems),
-        );
+        $cartArray = [
+            ...json_decode($cart, true),
+            'owner' => $cartOwner,
+            'items' => $this->cartItemMapper->fromArray(
+                json_decode($cartItems, true)
+            )
+        ];
+
+        return $this->cartMapper->fromArray($cartArray);
     }
 
     public function store(Cart $cart): Cart
     {
-        $cartOwner = $cart->owner();
-
-        $cartOwnerVal = $cartOwner->value() . '.' . $cartOwner->type();
+        $cartOwnerVal = $cart->getOwner()->__toString();
         $keyCart = "cart:{$cartOwnerVal}";
         $keyCartItems = "cart:{$cartOwnerVal}:items";
+
+        $cart->setId($keyCart);
+
+        // $cart = new Cart(
+        //     id: $keyCart,
+        //     owner: $cartOwner,
+        //     items: [new CartItem(
+        //         cart_id: $keyCart,
+        //         product_id: 1,
+        //         title_snapshot: 'Тест',
+        //         price_snapshot: 500,
+        //         quantity: 3
+        //     )]
+        // );
 
         Cache::set(
             $keyCart,
@@ -59,7 +77,7 @@ class CacheCartRepository implements CartRepositoryInterface
 
         Cache::set(
             $keyCartItems,
-            json_encode($this->cartItemMapper->toArray($cart->items())),
+            json_encode($this->cartItemMapper->toArray($cart->getItems())),
             60 * 60 * 24
         );
 

@@ -62,6 +62,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
         );
 
+           $this->app->bind(
+            \App\Modules\Cart\Domain\Repositories\CartRepositoryInterface::class,
+            \App\Modules\Cart\Infrastructure\Repository\CacheCartRepository::class
+        );
+
         // $this->app->bind(
         //     \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class,
         //     fn() =>

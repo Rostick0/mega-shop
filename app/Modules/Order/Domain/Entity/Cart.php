@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Cart\Domain\Entity;
+namespace App\Modules\Order\Domain\Entity;
 
 use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
 
@@ -10,12 +10,12 @@ class Cart
      * @param CartItem[] $items
      */
     public function __construct(
-        public readonly ?int $id = null,
+        public readonly ?string $id = null,
         public readonly CartOwner $owner,
         private array $items = [],
     ) {}
 
-    public function owner(): CartOwner
+    public function getOwner(): CartOwner
     {
         return $this->owner;
     }
@@ -43,7 +43,7 @@ class Cart
     /**
      * @return CartItem[]
      */
-    public function items(): array
+    public function getItems(): array
     {
         return $this->items;
     }

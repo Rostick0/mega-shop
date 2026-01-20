@@ -2,8 +2,13 @@
 
 namespace App\Modules\Cart\Domain\ValueObject\CartOwner;
 
-interface CartOwner
+abstract class CartOwner
 {
-    public function value(): string;
-    public function type(): string;
+    abstract  public function value(): string;
+    abstract public function type(): string;
+
+    public function __toString(): string
+    {
+        return $this->type() . '.' . $this->value();
+    }
 }

@@ -37,7 +37,7 @@ class Order
         );
     }
 
-    public function items(): array
+    public function getItems(): array
     {
         return $this->items;
     }

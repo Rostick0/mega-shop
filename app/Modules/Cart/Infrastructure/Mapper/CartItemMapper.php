@@ -13,6 +13,7 @@ final class CartItemMapper
     public function toArray(array $cartItems): array
     {
         return array_map(fn($item) => [
+            'cart_id' => $item->cart_id,
             'product_id' => $item->product_id,
             'title_snapshot' => $item->title_snapshot,
             'price_snapshot' => $item->price_snapshot,

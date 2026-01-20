@@ -2,7 +2,7 @@
 
 namespace App\Modules\Order\Domain\Dto;
 
-class CreateOrderCommand
+class CreateOrderDTO
 {
     public function __construct(
         // public readonly string $cartId,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Cart\Application\GetActiveForUser;
+namespace App\Modules\Cart\Application\Queries\GetActiveForUser;
 
 class GetCartForUserQuery
 {
