@@ -35,6 +35,17 @@ class CacheCartRepository implements CartRepositoryInterface
         $keyCart = "cart:{$cartOwnerVal}";
         $keyCartItems = "cart:{$cartOwnerVal}:items";
 
+        //  $cart = new Cart(
+        //     id: $keyCart,
+        //     owner: $cartOwner,
+        //     items: [new CartItem(
+        //         cart_id: $keyCart,
+        //         product_id: 1,
+        //         title_snapshot: 'Тест',
+        //         price_snapshot: 500,
+        //         quantity: 3
+        //     )]
+        // );
         $cart = Cache::get($keyCart);
         $cartItems = Cache::get($keyCartItems);
 
@@ -45,6 +56,7 @@ class CacheCartRepository implements CartRepositoryInterface
                 json_decode($cartItems, true)
             )
         ];
+        // dd($this->cartMapper->fromArray($cartArray));
 
         return $this->cartMapper->fromArray($cartArray);
     }

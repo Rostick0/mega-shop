@@ -7,6 +7,7 @@ use App\Modules\Order\Application\Dto\CreateOrderDTO;
 use App\Modules\Order\Domain\Entity\CartItem;
 use App\Modules\Order\Domain\Api\CartApiInterface;
 use App\Modules\Order\Domain\Entity\Order;
+use App\Modules\Order\Domain\Entity\OrderStatusEnum;
 use App\Modules\Order\Domain\Repositories\OrderRepositoryInterface;
 
 class CreateOrderHandler
@@ -21,15 +22,13 @@ class CreateOrderHandler
     {
         $cart = $this->cartApi->get();
 
-        dd($cart->getItems());
-
         $order = new Order(
             id: null,
             title: "Заказ номер ",
             user_id: $this->currentUserProvider->get()->id ?? null,
             email: $command->email,
-            amount: null,
-            status: null,
+            amount: $cart->getTotal(),
+            status: OrderStatusEnum::pending,
             items: [],
         );
 
@@ -43,8 +42,7 @@ class CreateOrderHandler
                 quantity: $item->quantity,
             );
         }
-
-
+        // dd($order);
 
         $createdOrder = $this->orderRepository->store($order);
 

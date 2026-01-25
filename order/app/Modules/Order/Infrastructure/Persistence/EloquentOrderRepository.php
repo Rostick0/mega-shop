@@ -7,6 +7,7 @@ use App\Modules\Order\Domain\Repositories\OrderRepositoryInterface;
 use App\Modules\Order\Infrastructure\Eloquent\OrderModel;
 use App\Modules\Order\Infrastructure\Mapper\OrderItemMapper;
 use App\Modules\Order\Infrastructure\Mapper\OrderMapper;
+use Illuminate\Support\Facades\DB;
 
 // use App\Modules\Product\Application\Queries\GetProductPagination\PaginationRequest;
 // use App\Modules\Product\Application\Queries\GetProductPagination\ProductSearchRequest;
@@ -50,23 +51,15 @@ class EloquentOrderRepository implements OrderRepositoryInterface
 
     public function store(Order $order): Order
     {
-        $orderModel  = OrderModel::create([
-            'title' => $order->title,
-            'user_id' => $order->user_id,
-            'email' => $order->email,
-            'amount' => $order->amount,
-            'status' => $order->status,
-        ]);
+        $orderModel = OrderModel::create(
+            $this->orderMapper->toArray($order),
+        );
 
-        $orderModel->ordergetItems()->createMany(array_map(
-            fn($el) => [
-                'product_id' => $el->product_id,
-                'price_snapshot' => $el->price_snapshot,
-                'title_snapshot' => $el->title_snapshot,
-                'quantity' => $el->quantity,
-            ],
-            $order->getItems()
-        ));
+
+        $orderModel->ordergetItems()->createMany(
+            $this->orderItemMapper->toArray($order->getItems()),
+        );
+
 
         return new Order(
             id: $orderModel->id,
@@ -75,10 +68,7 @@ class EloquentOrderRepository implements OrderRepositoryInterface
             email: $orderModel->email,
             amount: $orderModel->amount,
             status: $orderModel->status,
-            items: array_map(
-                fn($item) => $this->orderItemMapper->fromArray($item),
-                $orderModel->ordergetItems()
-            ),
+            items: $this->orderItemMapper->fromArray($orderModel->ordergetItems->toArray()),
         );
     }
 }

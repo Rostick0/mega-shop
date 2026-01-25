@@ -16,6 +16,7 @@ class CartResource extends JsonResource
         $items = [];
         foreach ($cart->getItems() as $item) {
             $items[] = [
+                'cart_id' => $item->cart_id,
                 'product_id' => $item->product_id,
                 'title_snapshot' => $item->title_snapshot,
                 'price_snapshot' => $item->price_snapshot,

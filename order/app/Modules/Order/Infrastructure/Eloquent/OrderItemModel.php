@@ -11,12 +11,11 @@ class OrderItemModel extends Model
     protected $table = 'order_items';
 
     protected $fillable = [
-        'title',
-        'user_id',
-        'email',
-        'amount',
-        'status',
-        // items,
+        'order_id',
+        'product_id',
+        'title_snapshot',
+        'price_snapshot',
+        'quantity',
     ];
 
     public function order(): BelongsTo

@@ -2,8 +2,6 @@
 
 namespace App\Modules\Order\Domain\Entity;
 
-use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
-
 class Cart
 {
     /**
@@ -45,5 +43,10 @@ class Cart
     public function isEmpty(): bool
     {
         return empty($this->items);
+    }
+
+    public function getTotal(): float
+    {
+        return array_reduce($this->items, fn($counter, $el) => $counter + $el->getSubtotal(), 0.0);
     }
 }

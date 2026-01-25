@@ -6,7 +6,7 @@ class OrderItem
 {
     public function __construct(
         public readonly ?int $id,
-        public readonly int $order_id,
+        public readonly ?int $order_id,
         public readonly int $product_id,
         public readonly string $title_snapshot,
         public readonly int $price_snapshot,

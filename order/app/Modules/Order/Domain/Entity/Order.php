@@ -13,7 +13,7 @@ class Order
         public readonly ?int $user_id,
         public readonly string $email,
         public readonly ?float $amount,
-        public readonly ?float $status,
+        public readonly ?OrderStatusEnum $status,
         private array $items,
     ) {}
 

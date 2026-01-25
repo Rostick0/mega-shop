@@ -20,4 +20,9 @@ class CartItem
 
         $this->quantity = $quantity;
     }
+
+    public function getSubtotal(): float
+    {
+        return $this->price_snapshot * $this->quantity;
+    }
 }

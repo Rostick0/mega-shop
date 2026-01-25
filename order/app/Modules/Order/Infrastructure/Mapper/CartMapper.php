@@ -3,6 +3,7 @@
 namespace App\Modules\Order\Infrastructure\Mapper;
 
 use App\Modules\Order\Domain\Entity\Cart;
+use App\Modules\Order\Domain\Entity\CartItem;
 
 final class CartMapper
 {
@@ -21,7 +22,13 @@ final class CartMapper
     {
         $cart = new Cart(
             id: $data['id'],
-            items: $data['items'] ?? [],
+            items: array_map(fn($item) => new CartItem(
+                cart_id: $item['cart_id'],
+                product_id: $item['product_id'],
+                title_snapshot: $item['title_snapshot'],
+                price_snapshot: $item['price_snapshot'],
+                quantity: $item['quantity'],
+            ), $data['items'] ?? []),
         );
 
         return $cart;

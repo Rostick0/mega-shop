@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Modules\Cart\Presentation\Http\Resources;
+namespace App\Modules\Order\Presentation\Http\Resources;
 
-use App\Modules\Cart\Domain\Entity\Cart;
+use App\Modules\Order\Domain\Entity\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CartResource extends JsonResource
+class OrderResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        /** @var Cart $cart */
-        $cart = $this->resource;
+        /** @var Order $order */
+        $order = $this->resource;
 
         $items = [];
-        foreach ($cart->getItems() as $item) {
+        foreach ($order->getItems() as $item) {
             $items[] = [
-                'cart_id' => $item->cart_id,
+                'order_id' => $item->order_id,
                 'product_id' => $item->product_id,
                 'title_snapshot' => $item->title_snapshot,
                 'price_snapshot' => $item->price_snapshot,
@@ -25,8 +25,11 @@ class CartResource extends JsonResource
         }
 
         return [
-            'id' => $cart->getId(),
-            'owner' => $cart->getOwner()->__toString(),
+            'id' => $order->id,
+            'title' => $order->title,
+            'email' => $order->email,
+            'amount' => $order->amount,
+            'status' => $order->status,
             'items' => $items,
         ];
     }
