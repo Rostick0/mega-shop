@@ -17,6 +17,7 @@ class CartApi implements CartApiInterface
     public function get(): Cart
     {
         $res = $this->http->get(url()->asset('/api/carts'));
+        dd($res);
 
         if ($res->successful()) {
             $data = $res->json();

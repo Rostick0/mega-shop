@@ -14,11 +14,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \App\Modules\Product\Domain\Repositories\ProductRepositoryInterface::class,
-            \App\Modules\Product\Infrastructure\Persistence\EloquentProductRepository::class
-        );
-
-        $this->app->bind(
             \App\Modules\User\Domain\Repositories\UserRepositoryInterface::class,
             \App\Modules\User\Infrastructure\Persistence\EloquentUserRepository::class
         );
@@ -65,16 +60,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Modules\Cart\Domain\Repositories\CartRepositoryInterface::class,
             \App\Modules\Cart\Infrastructure\Repository\CacheCartRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Order\Domain\Api\CartApiInterface::class,
-            \App\Modules\Order\Infrastructure\Api\CartApi::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Order\Domain\Repositories\OrderRepositoryInterface::class,
-            \App\Modules\Order\Infrastructure\Persistence\EloquentOrderRepository::class
         );
 
         // $this->app->bind(

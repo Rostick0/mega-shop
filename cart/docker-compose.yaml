@@ -21,33 +21,33 @@ services:
         networks:
             - app_network
         depends_on:
-            - pgsql
+            # - pgsql
             - redis
-    pgsql:
-        image: 'postgres:18-alpine'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
-        environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
-        volumes:
-            - 'sail-pgsql:/var/lib/postgresql'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
-        networks:
-            - app_network
-        healthcheck:
-            test:
-                - CMD
-                - pg_isready
-                - '-q'
-                - '-d'
-                - '${DB_DATABASE}'
-                - '-U'
-                - '${DB_USERNAME}'
-            retries: 3
-            timeout: 5s
+    # pgsql:
+    #     image: 'postgres:18-alpine'
+    #     ports:
+    #         - '${FORWARD_DB_PORT:-5432}:5432'
+    #     environment:
+    #         PGPASSWORD: '${DB_PASSWORD:-secret}'
+    #         POSTGRES_DB: '${DB_DATABASE}'
+    #         POSTGRES_USER: '${DB_USERNAME}'
+    #         POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    #     volumes:
+    #         - 'sail-pgsql:/var/lib/postgresql'
+    #         - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+    #     networks:
+    #         - sail
+    #     healthcheck:
+    #         test:
+    #             - CMD
+    #             - pg_isready
+    #             - '-q'
+    #             - '-d'
+    #             - '${DB_DATABASE}'
+    #             - '-U'
+    #             - '${DB_USERNAME}'
+    #         retries: 3
+    #         timeout: 5s
     redis:
         image: 'redis:alpine'
         ports:
@@ -67,7 +67,8 @@ networks:
     app_network:
         external: true
 volumes:
-    sail-pgsql:
-        driver: local
+    # sail-pgsql:
+    #     driver: local
     sail-redis:
         driver: local
+    

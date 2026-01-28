@@ -1,0 +1,37 @@
+{
+  "$schema": "https://www.krakend.io/schema/v2.12/krakend.json",
+  "version": 3,
+  "port": 80,
+  "endpoints": [
+    {
+      "endpoint": "/carts",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/carts",
+          "host": ["http://cart-laravel.test-1:80"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/api/orders",
+          "host": ["http://order-laravel.test-1:80"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/orders",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/orders",
+          "host": ["http://order-laravel.test-1:80"]
+        }
+      ]
+    }
+  ]
+}
