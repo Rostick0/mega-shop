@@ -10,6 +10,13 @@ use Illuminate\Http\JsonResponse;
 
 class OrderConroller
 {
+    public function index()
+    {
+        return new JsonResponse([
+            'data' => 1,
+        ]);
+    }
+
     public function store(StoreOrderListRequest $request, CreateOrderHandler $handler)
     {
         $resource = $handler->execute(new CreateOrderDTO(

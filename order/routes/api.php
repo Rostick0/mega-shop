@@ -32,5 +32,5 @@ Route::name('api.')
 
         Route::apiResource('users', UserController::class)->except('store');
         Route::apiResource('products', ProductController::class)->only('index', 'show');
-        Route::apiResource('orders', OrderConroller::class)->only('store');
+        Route::apiResource('orders', OrderConroller::class)->only('index', 'store');
     });

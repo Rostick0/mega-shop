@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Order\Infrastructure\Api;
+namespace Order\App\Modules\Order\Infrastructure\GRPC;
 
 use App\Modules\Order\Domain\Api\CartApiInterface;
 use App\Modules\Order\Domain\Entity\Cart;

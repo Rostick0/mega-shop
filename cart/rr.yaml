@@ -1,4 +1,18 @@
-grpc:
-  listen: tcp://0.0.0.0:9001
-  proto:
-    - shared/grpc/cart.proto
+version: "3"
+
+server:
+  command: "php artisan octane:roadrunner"
+  relay: pipes
+
+http:
+  address: 0.0.0.0:8000
+  middleware: ["headers", "gzip"]
+
+logs:
+  level: info
+
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+proto:
+  - "shared/grpc/cart.proto"

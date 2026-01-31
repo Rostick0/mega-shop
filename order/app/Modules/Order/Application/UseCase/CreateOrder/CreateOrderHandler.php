@@ -21,7 +21,6 @@ class CreateOrderHandler
     public function execute(CreateOrderDTO $command)
     {
         $cart = $this->cartApi->get();
-        dd($cart);
 
         $order = new Order(
             id: null,
