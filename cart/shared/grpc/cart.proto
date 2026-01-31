@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package cart;
+
+service CartService {
+  rpc GetCart (GetCartRequest) returns (CartResponse);
+}
+
+message GetCartRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+}
+
+message CartResponse {
+  repeated CartItem items = 1;
+  double total = 2;
+}
+
+message CartItem {
+  int64 product_id = 1;
+  string title_snapshot = 2;
+  double price_snapshot = 3;
+  int32 quantity = 4;
+}
