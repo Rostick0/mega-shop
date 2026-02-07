@@ -1,40 +1,45 @@
 <?php
 
-namespace Cart\App\Modules\Cart\Presentation\Grpc\Controllers;
+namespace App\Modules\Cart\Presentation\Grpc\Controllers;
 
+use App\Grpc\Cart\CartItem;
+use App\Grpc\Cart\CartResponse;
+use App\Grpc\Cart\CartServiceInterface;
+use App\Grpc\Cart\GetCartRequest;
 use App\Modules\Cart\Domain\Repositories\CartRepositoryInterface;
 use App\Modules\Cart\Infrastructure\Adapter\CartOwnerResolver;
-use Cart\CartItem;
-use Cart\CartResponse;
-use Cart\GetCartRequest;
+use Spiral\RoadRunner\GRPC\ContextInterface;
 
-class CartController
+class CartController implements CartServiceInterface
 {
     public function __construct(
-        private CartRepositoryInterface $cartRepository
+        private CartRepositoryInterface $cartRepository,
+        private CartOwnerResolver $resolver
     ) {}
 
-    public function GetCart(GetCartRequest $request, CartOwnerResolver $resolver): CartResponse
+    public function GetCart(ContextInterface $ctx, GetCartRequest $request,): CartResponse
     {
-
-
         $cart = $this->cartRepository->getActive(
-            $resolver->resolve($request->getUserId() ?? null, 1 ?? $request->getSessionId())
+            $this->resolver->resolve($request->getUserId() ?? null, 1 ?? $request->getSessionId())
         );
 
-        $response = new CartResponse();
-
+        $carItems = [];
         foreach ($cart->getItems() as $item) {
-            $cartItem = new CartItem();
-            $cartItem->setProductId($item->product_id);
-            $cartItem->setTitleSnapshot($item->title_snapshot);
-            $cartItem->setPriceSnapshot($item->price_snapshot);
-            $cartItem->setQuantity($item->quantity);
+            $cartItem = new CartItem([
+                'product_id' => $item->product_id,
+                'title_snapshot' => $item->title_snapshot,
+                'price_snapshot' => $item->price_snapshot,
+                'quantity' => $item->quantity,
+            ]);
 
-            $response->getItems()[] = $cartItem;
+            $carItems[] = $cartItem;
         }
 
-        // $response->setTotal($cart->getTotal());
+        $response = new CartResponse([
+            'id' => $cart->getId(),
+            'total' => $cart->getTotal(),
+            'items' => $carItems,
+        ]);
 
         return $response;
     }

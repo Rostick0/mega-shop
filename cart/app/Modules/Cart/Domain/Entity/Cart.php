@@ -57,4 +57,16 @@ class Cart
     {
         return $this->items;
     }
+
+    /**
+     * @return int
+     */
+    public function getTotal(): int
+    {
+        return array_reduce(
+            $this->items,
+            fn(int $previous, CartItem $current) => $previous + $current->getTotal(),
+            0
+        );
+    }
 }

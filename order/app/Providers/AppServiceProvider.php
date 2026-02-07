@@ -69,7 +69,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Modules\Order\Domain\Api\CartApiInterface::class,
-            \App\Modules\Order\Infrastructure\Api\CartApi::class
+            \App\Modules\Order\Infrastructure\Grpc\CartGrpc::class
+            // \App\Modules\Order\Infrastructure\Api\CartApi::class
         );
 
         $this->app->bind(

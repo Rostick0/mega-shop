@@ -20,4 +20,12 @@ class CartItem
 
         $this->quantity = $quantity;
     }
+
+    /**
+     * @return int
+     */
+    public function getTotal(): int
+    {
+        return $this->price_snapshot * $this->quantity;
+    }
 }

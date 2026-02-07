@@ -1,7 +1,7 @@
 <?php
 // GENERATED CODE -- DO NOT EDIT!
 
-namespace Cart;
+namespace App\Grpc\Cart;
 
 /**
  */
@@ -17,16 +17,16 @@ class CartServiceClient extends \Grpc\BaseStub {
     }
 
     /**
-     * @param \Cart\GetCartRequest $argument input argument
+     * @param \App\Grpc\Cart\GetCartRequest $argument input argument
      * @param array $metadata metadata
      * @param array $options call options
      * @return \Grpc\UnaryCall
      */
-    public function GetCart(\Cart\GetCartRequest $argument,
+    public function GetCart(\App\Grpc\Cart\GetCartRequest $argument,
       $metadata = [], $options = []) {
         return $this->_simpleRequest('/cart.CartService/GetCart',
         $argument,
-        ['\Cart\CartResponse', 'decode'],
+        ['\App\Grpc\Cart\CartResponse', 'decode'],
         $metadata, $options);
     }
 

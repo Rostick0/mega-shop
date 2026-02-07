@@ -11,6 +11,7 @@ final class CartMapper
     {
         return [
             'id' => $cart->id,
+            'total' => $cart->total,
         ];
     }
 
@@ -22,11 +23,11 @@ final class CartMapper
     {
         $cart = new Cart(
             id: $data['id'],
+            total: $data['total'],
             items: array_map(fn($item) => new CartItem(
-                cart_id: $item['cart_id'],
-                product_id: $item['product_id'],
-                title_snapshot: $item['title_snapshot'],
-                price_snapshot: $item['price_snapshot'],
+                product_id: $item['productId'],
+                title_snapshot: $item['titleSnapshot'],
+                price_snapshot: $item['priceSnapshot'],
                 quantity: $item['quantity'],
             ), $data['items'] ?? []),
         );

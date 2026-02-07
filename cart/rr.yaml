@@ -1,18 +1,21 @@
 version: "3"
 
+grpc:
+  listen: tcp://0.0.0.0:9001
+  proto:
+    - "shared/grpc/cart.proto"
+
 server:
-  command: "php artisan octane:roadrunner"
+  command: "php grpc-worker.php"
   relay: pipes
 
-http:
-  address: 0.0.0.0:8000
-  middleware: ["headers", "gzip"]
+pool:
+  num_workers: 4
+  max_jobs: 0
+  allocate_timeout: 60s
+  destroy_timeout: 60s
 
 logs:
-  level: info
-
-rpc:
-  listen: tcp://127.0.0.1:6001
-
-proto:
-  - "shared/grpc/cart.proto"
+  level: error
+  encoding: console
+  output: stderr

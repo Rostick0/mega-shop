@@ -9,6 +9,7 @@ class Cart
      */
     public function __construct(
         public readonly ?string $id = null,
+        public readonly int $total,
         private array $items = [],
     ) {}
 
