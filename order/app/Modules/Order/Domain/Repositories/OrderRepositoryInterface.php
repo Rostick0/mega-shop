@@ -2,10 +2,7 @@
 
 namespace App\Modules\Order\Domain\Repositories;
 
-use App\Modules\Order\Domain\Dto\OrderPaginationResult;
 use App\Modules\Order\Domain\Entity\Order;
-use App\Modules\Product\Application\Queries\GetProductPagination\PaginationRequest;
-use App\Modules\Product\Application\Queries\GetProductPagination\ProductSearchRequest;
 
 interface OrderRepositoryInterface
 {

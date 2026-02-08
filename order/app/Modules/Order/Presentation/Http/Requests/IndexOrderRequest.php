@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Modules\Product\Presentation\Http\Requests;
+namespace App\Modules\Order\Presentation\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class GetProductListRequest extends FormRequest
+class IndexOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +27,8 @@ class GetProductListRequest extends FormRequest
             'page'       => ['sometimes', 'integer', 'min:1'],
             'limit'      => ['sometimes', 'integer', 'min:1', 'max:100'],
             'title'      => ['sometimes', 'nullable', 'string', 'max:255'],
-            'price_from' => ['sometimes', 'nullable', 'numeric'],
-            'price_to'   => ['sometimes', 'nullable', 'numeric'],
+            // 'price_from' => ['sometimes', 'nullable', 'numeric'],
+            // 'price_to'   => ['sometimes', 'nullable', 'numeric'],
         ];
     }
 }

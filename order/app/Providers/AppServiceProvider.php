@@ -63,11 +63,6 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Modules\Cart\Domain\Repositories\CartRepositoryInterface::class,
-            \App\Modules\Cart\Infrastructure\Repository\CacheCartRepository::class
-        );
-
-        $this->app->bind(
             \App\Modules\Order\Domain\Api\CartApiInterface::class,
             \App\Modules\Order\Infrastructure\Grpc\CartGrpc::class
             // \App\Modules\Order\Infrastructure\Api\CartApi::class
@@ -76,6 +71,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Modules\Order\Domain\Repositories\OrderRepositoryInterface::class,
             \App\Modules\Order\Infrastructure\Persistence\EloquentOrderRepository::class
+        );
+
+         $this->app->bind(
+            \App\Modules\Order\Domain\Repositories\OrderQueryRepositoryInterface::class,
+            \App\Modules\Order\Infrastructure\Persistence\EloquentOrderQueryRepository::class
         );
 
         // $this->app->bind(
