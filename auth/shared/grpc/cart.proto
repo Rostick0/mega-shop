@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package cart;
+
+option php_namespace = "App\\Grpc\\Cart";
+option php_metadata_namespace = "App\\Grpc\\GPBMetadata";
+
+service CartService {
+  rpc GetCart (GetCartRequest) returns (CartResponse);
+}
+
+message GetCartRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+}
+
+message CartResponse {
+  int64 id = 1;
+  double total = 2;
+  repeated CartItem items = 3;
+}
+
+message CartItem {
+  int64 product_id = 1;
+  string title_snapshot = 2;
+  double price_snapshot = 3;
+  int32 quantity = 4;
+}

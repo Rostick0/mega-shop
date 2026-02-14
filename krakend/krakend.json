@@ -2,7 +2,25 @@
   "$schema": "https://www.krakend.io/schema/v2.12/krakend.json",
   "version": 3,
   "port": 80,
+  "extra_config": {
+    "telemetry/logging": {
+      "level": "DEBUG",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true
+    }
+  },
   "endpoints": [
+    {
+      "endpoint": "/auth/login",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/auth/login",
+          "host": ["http://auth-laravel.test-1:80"]
+        }
+      ]
+    },
     {
       "endpoint": "/carts",
       "method": "GET",
@@ -21,7 +39,15 @@
           "url_pattern": "/api/orders",
           "host": ["http://order-laravel.test-1:80"]
         }
-      ]
+      ],
+      "input_headers": ["Authorization", "X-User-Id"],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "secret": "g3iTbmJvZenC+YwKRCt0N/LO6rTc5j0pcSaxuL8RvDo=",
+          "propagate_claims": [["sub", "X-User-Id"]]
+        }
+      }
     },
     {
       "endpoint": "/orders",

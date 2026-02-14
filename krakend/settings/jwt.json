@@ -1,0 +1,10 @@
+{
+  "jwt_validator": {
+    "alg": "RS256",
+    "jwk_url": "http://auth-laravel.test-1/api/auth/me",
+    "propagate_claims": [
+      ["sub", "X-User-Id"],
+      ["email", "X-User-Email"]
+    ]
+  }
+}
