@@ -2,9 +2,10 @@
   "keys": [
     {
       "kty": "oct",
-      "kid": "sim1",
-      "k": "g3iTbmJvZenC-YwKRCt0N_LO6rTc5j0pcSaxuL8RvDo",
-      "alg": "HS256"
+      "alg": "HS256",
+      "use": "sig",
+      "k": "ZzNpVGJtSnZaZW5DK1l3S1JDdDBOL0xPNnJUYzVqMHBjU2F4dUw4UnZEbz0",
+      "kid": "sim1"
     }
   ]
 }

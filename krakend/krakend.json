@@ -40,12 +40,14 @@
           "host": ["http://order-laravel.test-1:80"]
         }
       ],
-      "input_headers": ["Authorization", "X-User-Id"],
+      "input_headers": ["Authorization", "x-user-id"],
       "extra_config": {
         "auth/validator": {
           "alg": "HS256",
-          "secret": "g3iTbmJvZenC+YwKRCt0N/LO6rTc5j0pcSaxuL8RvDo=",
-          "propagate_claims": [["sub", "X-User-Id"]]
+          "jwk_local_path": "/etc/krakend/config/settings/jwk.json",
+          "disable_jwk_security": true,
+          "kid": "sim1",
+          "propagate_claims": [["sub", "x-user-id"]]
         }
       }
     },
