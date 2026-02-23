@@ -34,4 +34,18 @@ class PaymentMapper
 
         return $paymentModel;
     }
+
+    public function toDomain(PaymentModel $paymentModel): Payment
+    {
+        return new Payment(
+            id: $paymentModel->getId(),
+            external_reference: $paymentModel->getExternalReference(),
+            provider: $paymentModel->getProvider(),
+            provider_payment_id: $paymentModel->getProviderPaymentId(),
+            amount: $paymentModel->getAmount(),
+            currency: $paymentModel->getCurrency(),
+            status: $paymentModel->getStatus(),
+            created_at: $paymentModel->getCreatedAt()
+        );
+    }
 }
