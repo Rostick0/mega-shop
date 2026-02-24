@@ -2,6 +2,7 @@
 
 namespace App\Modules\Order\Presentation\Http\Controllers;
 
+use App\Broker\Rabbitmq\Publisher;
 use App\Modules\Order\Application\Dto\CreateOrderDTO;
 use App\Modules\Order\Application\Dto\OrderSearchCriteria;
 use App\Modules\Order\Application\Dto\PaginationRequest;
