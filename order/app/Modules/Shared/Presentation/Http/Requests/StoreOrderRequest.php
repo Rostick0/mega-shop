@@ -24,8 +24,7 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => [Rule::requiredIf(fn() => !Auth::check()), 'email'],
-            'provider' => ['required']
+            'email' => [Rule::requiredIf(fn() => !Auth::check()), 'email']
             // 'page'       => ['sometimes', 'integer', 'min:1'],
             // 'limit'      => ['sometimes', 'integer', 'min:1', 'max:100'],
             // 'title'      => ['sometimes', 'nullable', 'string', 'max:255'],

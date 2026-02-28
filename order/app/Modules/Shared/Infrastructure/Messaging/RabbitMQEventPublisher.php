@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Modules\Order\Infrastructure\Messaging;
+namespace App\Modules\Shared\Infrastructure\Messaging;
 
+use App\Modules\Shared\Application\Port\MessagePublisherInterface;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-final class RabbitMQEventPublisher
+final class RabbitMQEventPublisher implements MessagePublisherInterface
 {
     private ?AMQPStreamConnection $connection = null;
 
@@ -18,7 +20,7 @@ final class RabbitMQEventPublisher
             properties: [
                 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
                 'content_type'  => 'application/json',
-                'message_id'    => (string) \Str::uuid(),
+                'message_id'    => (string) Str::uuid(),
             ]
         );
 

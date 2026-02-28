@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Order\Application\Port;
+namespace App\Modules\Shared\Application\Port;
 
 interface EventPublisherInterface
 {

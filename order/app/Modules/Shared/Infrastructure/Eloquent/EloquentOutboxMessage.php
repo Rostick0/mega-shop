@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Modules\Order\Infrastructure\Eloquent;
+namespace App\Modules\Shared\Infrastructure\Eloquent;
 
-use App\Modules\Order\Domain\Entity\OrderStatusEnum;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EloquentOutboxMessage extends Model
 {
     protected $table = 'outbox_messages';
+
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    public $timestamps = false;
 
     protected $fillable = [
         'id',

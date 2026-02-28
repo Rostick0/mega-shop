@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('exchange');
             $table->string('routing_key');
             $table->json('payload');
-            $table->enum('status', ['pending', 'sent', 'failed'])->default('pending');
+            $table->enum('status', ['pending', 'processing', 'sent', 'failed'])->default('pending');
             $table->unsignedInteger('attempts')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('sent_at')->nullable();

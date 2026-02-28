@@ -4,7 +4,7 @@ namespace App\Modules\Order\Application\UseCase\CreateOrder;
 
 use App\Modules\Auth\Application\Contract\CurrentUserProviderInterface;
 use App\Modules\Order\Application\Dto\CreateOrderDTO;
-use App\Modules\Order\Application\Port\EventPublisherInterface;
+use App\Modules\Shared\Application\Port\EventPublisherInterface;
 use App\Modules\Order\Domain\Entity\CartItem;
 use App\Modules\Order\Domain\Api\CartApiInterface;
 use App\Modules\Order\Domain\Entity\Order;
@@ -53,6 +53,7 @@ class CreateOrderHandler
                 id: $createdOrder->id,
                 user_id: $createdOrder->user_id,
                 email: $createdOrder->email,
+                provider: $command->provider,
                 amount: $createdOrder->amount,
                 status: $createdOrder->status,
             ),

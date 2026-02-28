@@ -73,9 +73,24 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\Order\Infrastructure\Persistence\EloquentOrderRepository::class
         );
 
-         $this->app->bind(
+        $this->app->bind(
             \App\Modules\Order\Domain\Repositories\OrderQueryRepositoryInterface::class,
             \App\Modules\Order\Infrastructure\Persistence\EloquentOrderQueryRepository::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Shared\Application\Port\EventPublisherInterface::class,
+            \App\Modules\Shared\Infrastructure\Persistence\OutboxEventPublisher::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Shared\Application\Port\MessagePublisherInterface::class,
+            \App\Modules\Shared\Infrastructure\Messaging\RabbitMQEventPublisher::class
+        );
+
+        $this->app->bind(
+            \App\Modules\Shared\Application\Port\OutboxRepositoryInterface::class,
+            \App\Modules\Shared\Infrastructure\Persistence\EloquentOutboxRepository::class
         );
 
         // $this->app->bind(
