@@ -9,7 +9,7 @@ class Payment
 {
     public function __construct(
         public readonly string $id,
-        public readonly ?string $external_reference = null,
+        public readonly ?string $order_id = null,
         public readonly string $provider,
         public readonly ?int $provider_payment_id = null,
         public readonly int $amount,

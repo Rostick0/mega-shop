@@ -12,7 +12,7 @@ class PaymentMapper
         $paymentModel = new PaymentModel();
 
         $paymentModel->setId($payment->id);
-        $paymentModel->setExternalReference($payment->external_reference);
+        $paymentModel->setOrderId($payment->order_id);
         $paymentModel->setProvider($payment->provider);
         $paymentModel->setProviderPaymentId($payment->provider_payment_id);
         $paymentModel->setAmount($payment->amount);
@@ -25,7 +25,7 @@ class PaymentMapper
 
     public function updateForDoctrine(Payment $payment, PaymentModel $paymentModel): PaymentModel
     {
-        $paymentModel->setExternalReference($payment->external_reference);
+        $paymentModel->setOrderId($payment->order_id);
         $paymentModel->setProvider($payment->provider);
         $paymentModel->setProviderPaymentId($payment->provider_payment_id);
         $paymentModel->setAmount($payment->amount);
@@ -39,7 +39,7 @@ class PaymentMapper
     {
         return new Payment(
             id: $paymentModel->getId(),
-            external_reference: $paymentModel->getExternalReference(),
+            order_id: $paymentModel->getOrderId(),
             provider: $paymentModel->getProvider(),
             provider_payment_id: $paymentModel->getProviderPaymentId(),
             amount: $paymentModel->getAmount(),

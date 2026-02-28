@@ -1,31 +1,40 @@
 <?php
 
-namespace App\Modules\Payment\Application\UseCase\CreatePayment;
+namespace App\Modules\Order\Application\UseCase\OrderCreated;
 
 use App\Modules\Payment\Application\Contracts\TransactionInterface;
-use App\Modules\Payment\Application\Dto\CreatePaymentDTO;
 use App\Modules\Payment\Domain\Entity\Payment;
 use App\Modules\Payment\Domain\Repository\PaymentRepositoryInterface;
+use App\Modules\Payment\Domain\ValueObject\CurrencyEnum;
 use App\Modules\Payment\Domain\ValueObject\PaymentStatusEnum;
+use Src\Modules\Shared\Application\Port\MessageHandlerInterface;
 use Symfony\Component\Uid\Uuid;
 
-class CreatePaymentHandler
+class OrderCreatedHandler implements MessageHandlerInterface
 {
+
     public function __construct(
         private PaymentRepositoryInterface $paymentRepository,
         private TransactionInterface $transaction,
     ) {}
 
-    public function execute(CreatePaymentDTO $command): Payment
+    public function supports(string $routingKey): bool
     {
-        return $this->transaction->run(function () use ($command): Payment {
+        return $routingKey === 'order.created';
+    }
+
+    public function execute(array $payload): void
+    {   
+
+
+        $this->transaction->run(function () use ($payload): Payment {
             $payment = new Payment(
                 id: Uuid::v7()->toRfc4122(),
-                order_id: $command->order_id,
-                provider: $command->provider,
+                order_id: $payload['id'],
+                provider: $payload['provider'],
                 provider_payment_id: null,
-                amount: $command->amount,
-                currency: $command->currency,
+                amount: $payload['amount'],
+                currency: CurrencyEnum::RUB,
                 status: PaymentStatusEnum::PENDING,
                 created_at: new \DateTimeImmutable(),
             );

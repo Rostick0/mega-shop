@@ -15,7 +15,7 @@ class PaymentModel
     private ?string $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $external_reference = null;
+    private ?string $order_id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $provider = null;
@@ -46,14 +46,14 @@ class PaymentModel
         return $this;
     }
 
-    public function getExternalReference(): ?string
+    public function getOrderId(): ?string
     {
-        return $this->external_reference;
+        return $this->order_id;
     }
 
-    public function setExternalReference(string $external_reference): static
+    public function setOrderId(string $order_id): static
     {
-        $this->external_reference = $external_reference;
+        $this->order_id = $order_id;
 
         return $this;
     }

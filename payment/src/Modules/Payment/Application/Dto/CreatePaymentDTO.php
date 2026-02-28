@@ -8,7 +8,7 @@ class CreatePaymentDTO
 {
     public function __construct(
         public readonly ?int $id = null,
-        public readonly string $external_reference,
+        public readonly string $order_id,
         public readonly string $provider,
         // public readonly ?int $provider_payment_id = null,
         public readonly int $amount,
@@ -21,7 +21,7 @@ class CreatePaymentDTO
     {
         return new self(
             id: $data['id'] ?? null,
-            external_reference: $data['external_reference'],
+            order_id: $data['order_id'],
             provider: $data['provider'],
             amount: $data['amount'],
             currency: CurrencyEnum::from($data['currency']),
