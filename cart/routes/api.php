@@ -2,7 +2,7 @@
 
 use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
 use App\Modules\Cart\Presentation\Http\Controllers\CartController;
-use App\Modules\Order\Presentation\Http\Controllers\OrderConroller;
+use App\Modules\Order\Presentation\Http\Controllers\OrderController;
 use App\Modules\Product\Presentation\Http\Controllers\ProductController;
 use App\Modules\User\Presentation\Http\Controllers\UserController;
 use Illuminate\Http\Request;

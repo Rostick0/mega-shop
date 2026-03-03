@@ -17,6 +17,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - app_network
 
   nginx:
     image: nginx:1.25-alpine
@@ -26,6 +28,8 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - php
+    networks:
+      - app_network
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
@@ -41,9 +45,15 @@ services:
       start_period: 60s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
+    networks:
+      - app_network
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
+
+networks:
+    app_network:
+        external: true
 
 volumes:
 ###> doctrine/doctrine-bundle ###

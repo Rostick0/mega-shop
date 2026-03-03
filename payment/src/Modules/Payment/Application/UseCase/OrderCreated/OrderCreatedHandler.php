@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Modules\Order\Application\UseCase\OrderCreated;
+namespace App\Modules\Payment\Application\UseCase\OrderCreated;
 
 use App\Modules\Payment\Application\Contracts\TransactionInterface;
 use App\Modules\Payment\Domain\Entity\Payment;
 use App\Modules\Payment\Domain\Repository\PaymentRepositoryInterface;
 use App\Modules\Payment\Domain\ValueObject\CurrencyEnum;
 use App\Modules\Payment\Domain\ValueObject\PaymentStatusEnum;
-use Src\Modules\Shared\Application\Port\MessageHandlerInterface;
+use App\Modules\Shared\Application\Port\MessageHandlerInterface;
 use Symfony\Component\Uid\Uuid;
 
-class OrderCreatedHandler implements MessageHandlerInterface
+final class OrderCreatedHandler implements MessageHandlerInterface
 {
 
     public function __construct(
@@ -24,9 +24,7 @@ class OrderCreatedHandler implements MessageHandlerInterface
     }
 
     public function execute(array $payload): void
-    {   
-
-
+    {
         $this->transaction->run(function () use ($payload): Payment {
             $payment = new Payment(
                 id: Uuid::v7()->toRfc4122(),

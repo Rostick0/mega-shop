@@ -1,13 +1,13 @@
 <?php
 
-namespace Src\Modules\Shared\Infrastructure\Messaging;
+namespace App\Modules\Shared\Infrastructure\Messaging;
 
-use Src\Modules\Shared\Application\Port\MessageHandlerInterface;
+use App\Modules\Shared\Application\Port\MessageHandlerInterface;
 
 final class MessageRouter
 {
     /** @param MessageHandlerInterface[] $handlers */
-    public function __construct(private readonly array $handlers) {}
+    public function __construct(private readonly iterable $handlers) {}
 
     public function route(string $routingKey, array $payload): void
     {

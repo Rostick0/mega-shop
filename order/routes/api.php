@@ -1,7 +1,7 @@
 <?php
 
 use App\Modules\Auth\Presentation\Http\Controllers\AuthController;
-use App\Modules\Order\Presentation\Http\Controllers\OrderConroller;
+use App\Modules\Order\Presentation\Http\Controllers\OrderController;
 use App\Modules\Product\Presentation\Http\Controllers\ProductController;
 use App\Modules\User\Presentation\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -32,5 +32,5 @@ Route::name('api.')
 
         Route::apiResource('users', UserController::class)->except('store');
         Route::apiResource('products', ProductController::class)->only('index', 'show');
-        Route::apiResource('orders', OrderConroller::class)->only('index', 'store');
+        Route::apiResource('orders', OrderController::class)->only('index', 'store');
     });

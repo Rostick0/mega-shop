@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Modules\Shared\Infrastructure\Messaging;
+namespace App\Modules\Shared\Infrastructure\Messaging;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -61,8 +61,12 @@ final class RabbitMQConsumer
 
     private function handleFailure(AMQPMessage $message, \Exception $e): void
     {
-        $deaths = $message->get('application_headers')
-            ?->getNativeData()['x-death'] ?? [];
+        $deaths = [];
+
+        if ($message->has('application_headers')) {
+            $headers = $message->get('application_headers')->getNativeData();
+            $deaths  = $headers['x-death'] ?? [];
+        }
 
         if (count($deaths) < 3) {
             $message->nack(requeue: true);
@@ -110,7 +114,7 @@ final class RabbitMQConsumer
             ]),
         );
 
-        $channel->queue_bind($queue, 'services', '#');
+        $channel->queue_bind($queue, 'services', 'order.*');
     }
 
     private function getConnection(): AMQPStreamConnection

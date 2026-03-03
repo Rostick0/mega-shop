@@ -28,4 +28,20 @@ services:
     App\Modules\Payment\Domain\Repository\PaymentRepositoryInterface:
         alias: App\Modules\Payment\Infrastructure\Persistence\Doctrine\Repository\DoctrinePaymentRepository
 
-    
+    # Автоматически находит все классы реализующие MessageHandlerInterface
+    _instanceof:
+        App\Modules\Shared\Application\Port\MessageHandlerInterface:
+            tags: ['app.message_handler']
+
+
+    App\Modules\Shared\Infrastructure\Messaging\MessageRouter:
+        arguments:
+            - !tagged_iterator app.message_handler  # все handler'ы инжектятся автоматически
+
+    App\Modules\Shared\Infrastructure\Messaging\RabbitMQConsumer:
+        arguments:
+            $host:     '%env(RABBITMQ_HOST)%'
+            $port:     '%env(int:RABBITMQ_PORT)%'
+            $user:     '%env(RABBITMQ_USER)%'
+            $password: '%env(RABBITMQ_PASSWORD)%'
+            $vhost:    '%env(RABBITMQ_VHOST)%'

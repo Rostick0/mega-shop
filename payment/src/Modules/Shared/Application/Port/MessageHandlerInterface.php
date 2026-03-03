@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Modules\Shared\Application\Port;
+namespace App\Modules\Shared\Application\Port;
 
 interface MessageHandlerInterface
 {

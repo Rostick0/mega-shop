@@ -2,7 +2,6 @@
 
 namespace App\Modules\Order\Presentation\Http\Controllers;
 
-use App\Broker\Rabbitmq\Publisher;
 use App\Modules\Order\Application\Dto\CreateOrderDTO;
 use App\Modules\Order\Application\Dto\OrderSearchCriteria;
 use App\Modules\Order\Application\Dto\PaginationRequest;
@@ -15,7 +14,7 @@ use App\Modules\Order\Presentation\Http\Resources\OrderResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
-class OrderConroller
+class OrderController
 {
     public function index(IndexOrderRequest $request, GetOrderListHandler $handler)
     {
@@ -48,6 +47,7 @@ class OrderConroller
     {
         $resource = $handler->execute(new CreateOrderDTO(
             email: Auth::user()->email ?? $request->input('email'),
+            provider: $request->input('provider'),
         ));
 
         return new JsonResponse([

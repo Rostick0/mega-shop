@@ -33,6 +33,19 @@ class DoctrinePaymentQueryRepository extends ServiceEntityRepository implements 
         return $this->paymentMapper->toDomain($paymentModel);
     }
 
+    public function findByOrderId(string $id): ?Payment
+    {
+        $em = $this->getEntityManager();
+
+        $paymentModel = $em->find(PaymentModel::class, $id);
+
+        if (!$paymentModel) {
+            throw new \Exception('Payment not found');
+        }
+
+        return $this->paymentMapper->toDomain($paymentModel);
+    }
+
     //    /**
     //     * @return PaymentModel[] Returns an array of PaymentModel objects
     //     */

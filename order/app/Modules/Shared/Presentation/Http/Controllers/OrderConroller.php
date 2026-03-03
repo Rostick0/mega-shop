@@ -15,7 +15,7 @@ use App\Modules\Order\Presentation\Http\Resources\OrderResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
-class OrderConroller
+class OrderController
 {
     public function index(IndexOrderRequest $request, GetOrderListHandler $handler)
     {
