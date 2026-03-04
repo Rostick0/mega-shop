@@ -3,6 +3,7 @@
 namespace App\Modules\Cart\Presentation\Http\Resources;
 
 use App\Modules\Cart\Domain\Entity\Cart;
+use App\Modules\Cart\Domain\Entity\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,6 +16,8 @@ class CartResource extends JsonResource
 
         $items = [];
         foreach ($cart->getItems() as $item) {
+            /** @var CartItem $item */
+
             $items[] = [
                 'cart_id' => $item->cart_id,
                 'product_id' => $item->product_id,

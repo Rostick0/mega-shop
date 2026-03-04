@@ -12,6 +12,7 @@ final class CartMapper
         return [
             'id' => $cart->getId(),
             'owner' => $cart->getOwner(),
+            'items' => $cart->getItems()
         ];
     }
 
@@ -24,7 +25,16 @@ final class CartMapper
         $cart = new Cart(
             id: $data['id'],
             owner: $data['owner'],
-            items: $data['items'] ?? [],
+            items: array_map(
+                fn($item) => new CartItem(
+                    cart_id: $item['cart_id'],
+                    product_id: $item['product_id'],
+                    title_snapshot: $item['title_snapshot'],
+                    price_snapshot: $item['price_snapshot'],
+                    quantity: $item['quantity'],
+                ),
+                $data['items']
+            ),
         );
 
         return $cart;
