@@ -7,7 +7,6 @@ use App\Modules\Cart\Domain\Entity\CartItem;
 use App\Modules\Cart\Domain\Repositories\CartRepositoryInterface;
 use App\Modules\Cart\Domain\ValueObject\CartOwner\CartOwner;
 use App\Modules\Cart\Infrastructure\Mapper\CartMapper;
-use App\Modules\Cart\Infrastructure\Mapper\CartItemMapper;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
@@ -15,7 +14,6 @@ class CacheCartRepository implements CartRepositoryInterface
 {
     public function __construct(
         public CartMapper $cartMapper,
-        public CartItemMapper $cartItemMapper,
     ) {}
 
 

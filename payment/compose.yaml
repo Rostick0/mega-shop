@@ -19,6 +19,7 @@ services:
         condition: service_healthy
     networks:
       - app_network
+      - database_data
 
   nginx:
     image: nginx:1.25-alpine
@@ -46,7 +47,7 @@ services:
     volumes:
       - database_data:/var/lib/postgresql/data:rw
     networks:
-      - app_network
+      - database_data
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
@@ -54,8 +55,12 @@ services:
 networks:
     app_network:
         external: true
+    database_data:
+        driver: bridge
+    
 
 volumes:
 ###> doctrine/doctrine-bundle ###
   database_data:
+      driver: local
 ###< doctrine/doctrine-bundle ###

@@ -21,6 +21,7 @@ services:
             - '.:/var/www/html'
         networks:
             - app_network
+            - sail
         depends_on:
             # - pgsql
             - redis
@@ -56,7 +57,7 @@ services:
         volumes:
             - 'sail-redis:/data'
         networks:
-            - app_network
+            - sail
         healthcheck:
             test:
                 - CMD
@@ -67,6 +68,8 @@ services:
 networks:
     app_network:
         external: true
+    sail:
+        driver: bridge
 volumes:
     # sail-pgsql:
     #     driver: local
