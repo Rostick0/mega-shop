@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: 'postgres:18-alpine'
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      -  database_data:/var/lib/postgresql/data:rw
+      - './docker/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+    networks:
+      - database_data
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - '-q'
+        - '-d'
+        - '${DB_DATABASE}'
+        - '-U'
+        - '${DB_USERNAME}'
+      retries: 3
+      timeout: 5s
+
+  golang:
+    build:
+      context: .
+      dockerfile: ./docker/golang/Dockerfile
+    container_name: go_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/var/www/html:rw
+    networks:
+      - app_network
+    ports:
+      - '${APP_PORT:-80}:80'
+
+  nginx:
+    image: nginx:1.25-alpine
+    restart: unless-stopped
+    ports:
+      - "84:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - golang
+    networks:
+      - app_network
+  # nginx:
+  #   image: nginx:1.25-alpine
+  #   container_name: nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/conf.d:/etc/nginx/conf.d:ro
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro
+  #     - nginx_logs:/var/log/nginx
+  #   depends_on:
+  #     - app
+  #   networks:
+  #     - frontend
+
+networks:
+  app_network:
+    external: true
+  database_data:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local
