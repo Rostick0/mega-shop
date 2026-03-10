@@ -27,6 +27,7 @@ func NewRouter(ProductHandler *controller.ProductHTTPHandler) http.Handler {
 		// w.Header().Set("Content-Type", "application/json")
 		// r.Get("/", ProductHandler.GetList)
 		r.Get("/{id}", ProductHandler.GetByID)
+		r.Get("/slug/{slug}", ProductHandler.GetBySlug)
 		// r.Post("/", ProductHandler.Create)
 		// r.Put("/{id}", ProductHandler.Update)
 		// r.Patch("/{id}", ProductHandler.Update)

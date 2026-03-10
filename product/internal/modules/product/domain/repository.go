@@ -13,4 +13,5 @@ type ProductWriter interface {
 
 type ProductReader interface {
     FindByID(ctx context.Context, id int64) (*entity.Product, error)
+    FindBySlug(ctx context.Context, slug string) (*entity.Product, error)
 }

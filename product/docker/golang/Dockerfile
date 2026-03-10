@@ -2,17 +2,26 @@ FROM golang:1.26.1-alpine AS builder
 
 WORKDIR /var/www/html
 
-# Cache dependencies first
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy source code and build
 COPY . .
-RUN go build -v -o /usr/local/bin/app ./cmd/api
+
+# Собираем два бинарника: приложение и миграции
+RUN go build -v -o /usr/local/bin/app     ./cmd/api
+RUN go build -v -o /usr/local/bin/migrate ./migrations
 
 # ─── Runtime ──────────────────────────────────────────────────────────────────
 FROM alpine:3.19
 
-COPY --from=builder /usr/local/bin/app /usr/local/bin/app
+RUN apk add --no-cache ca-certificates tzdata
 
-CMD ["app"]
+COPY --from=builder /usr/local/bin/app     /usr/local/bin/app
+COPY --from=builder /usr/local/bin/migrate /usr/local/bin/migrate
+COPY docker/golang/entrypoint.sh           /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8080
+
+ENTRYPOINT ["/entrypoint.sh"]

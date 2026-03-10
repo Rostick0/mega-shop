@@ -7,7 +7,8 @@ import (
 	
 	"app/internal/config"
  	
-	"app/internal/modules/product/application/query"
+	"app/internal/modules/product/application/query/get_product"
+	"app/internal/modules/product/application/query/get_product_by_slug"
     "app/internal/modules/product/infrastructure/persistence"
     "app/internal/modules/product/presentation/http/controller"
 	
@@ -18,22 +19,15 @@ import (
 var serverPort = "8080"
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-        fmt.Print("no .env file, reading from environment")
-    }
-
-	dbCfg := config.LoadDBConfig()
-    db, err := config.NewPostgresDB(dbCfg)
-	  if err != nil {
-        fmt.Print("failed to connect to db: %v", err)
-    }
-    defer db.Close()
+	godotenv.Load()
+	db := database.Connect()
 
 	repo    := persistence.NewProductRepository(db)
-    handler := query.NewGetProductHandler(repo)
-    productHandler    := controller.NewProductHTTPHandler(handler)
+    get_product_handler := get_product.NewGetProductHandler(repo)
+    get_product_by_slug_handler := get_product_by_slug.NewGetProductHandler(repo)
+    product_handler := controller.NewProductHTTPHandler(get_product_handler, get_product_by_slug_handler)
 
-	r := routes.NewRouter(productHandler)
+	r := routes.NewRouter(product_handler)
 	fmt.Print("Start server: http://localhost:" + serverPort)
 	http.ListenAndServe(":"+serverPort, r)
 }
