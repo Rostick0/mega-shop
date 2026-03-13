@@ -14,55 +14,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \App\Modules\Product\Domain\Repositories\ProductRepositoryInterface::class,
-            \App\Modules\Product\Infrastructure\Persistence\EloquentProductRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\User\Domain\Repositories\UserRepositoryInterface::class,
-            \App\Modules\User\Infrastructure\Persistence\EloquentUserRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\PasswordHasherInterface::class,
-            \App\Modules\Auth\Infrastructure\Hashing\LaravelPasswordHasher::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TokenServiceInterface::class,
-            fn() =>
-            new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
-                config('jwt.secret'),
-                new IlluminateFacadeGenerateUuid()
-            )
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Domain\Repositories\AuthRepositoryInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentAuthRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\CurrentUserProviderInterface::class,
-            \App\Modules\Auth\Infrastructure\Provider\LaravelCurrentUserProvider::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentRefreshTokenRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
-        );
-
-        $this->app->bind(
             \App\Modules\Order\Domain\Api\CartApiInterface::class,
             \App\Modules\Order\Infrastructure\Grpc\CartGrpc::class
             // \App\Modules\Order\Infrastructure\Api\CartApi::class
@@ -92,14 +43,6 @@ class AppServiceProvider extends ServiceProvider
             \App\Modules\Shared\Application\Port\OutboxRepositoryInterface::class,
             \App\Modules\Shared\Infrastructure\Persistence\EloquentOutboxRepository::class
         );
-
-        // $this->app->bind(
-        //     \App\Modules\Auth\Infrastructure\Service\JwtTokenService::class,
-        //     fn() =>
-        //     new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
-        //         config('jwt.secret')
-        //     )
-        // );
     }
 
     /**
@@ -109,13 +52,14 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
             try {
-                $jwt = new JwtTokenService(config('jwt.secret'), new IlluminateFacadeGenerateUuid());
+                $user = new \App\Modules\Shared\Infrastructure\Eloquent\UserModel();
 
-                $tokenPayload = $jwt->parseAccessToken($request->bearerToken() ?? '');
+                $user->id = $request->header('X-User-Id');
+                $user->email = $request->header('X-Email');
 
-                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find((int) $tokenPayload->userId)->first();
-            } catch (\Exception $th) {
-                // Log::error($th);
+                return $user;
+            } catch (\Exception $e) {
+                // Log::error($e);
                 return null;
             }
         });
