@@ -19,45 +19,6 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Modules\Auth\Application\Contract\PasswordHasherInterface::class,
-            \App\Modules\Auth\Infrastructure\Hashing\LaravelPasswordHasher::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TokenServiceInterface::class,
-            fn() =>
-            new \App\Modules\Auth\Infrastructure\Service\JwtTokenService(
-                config('jwt.secret'),
-                new IlluminateFacadeGenerateUuid()
-            )
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Domain\Repositories\AuthRepositoryInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentAuthRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\CurrentUserProviderInterface::class,
-            \App\Modules\Auth\Infrastructure\Provider\LaravelCurrentUserProvider::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentRefreshTokenRepository::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
-        );
-
-        $this->app->bind(
-            \App\Modules\Auth\Application\Contract\TransactionInterface::class,
-            \App\Modules\Auth\Infrastructure\Persistence\EloquentTransaction::class
-        );
-
-        $this->app->bind(
             \App\Modules\Cart\Domain\Repositories\CartRepositoryInterface::class,
             \App\Modules\Cart\Infrastructure\Repository\CacheCartRepository::class
         );
