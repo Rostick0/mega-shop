@@ -7,11 +7,11 @@ use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
 use App\Modules\Auth\Domain\Dto\RefreshTokenPayload;
 use App\Modules\Auth\Domain\Dto\TokenPayload;
-
+use App\Modules\Auth\Domain\Dto\UserToken;
 
 interface TokenServiceInterface
 {
-    public function issueAccessToken(int $userId): AccessToken;
+    public function issueAccessToken(UserToken $token): AccessToken;
     public function issueRefreshToken(int $userId): RefreshToken;
     public function parseAccessToken(string $token): TokenPayload;
     public function parseRefreshToken(string $token): RefreshTokenPayload;

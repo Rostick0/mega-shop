@@ -9,6 +9,7 @@ use App\Modules\Auth\Application\Queries\GetCurrentUserQuery\GetCurrentUserQuery
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailHandler;
 use App\Modules\Auth\Application\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\Modules\Auth\Application\UseCase\RefreshAuth\RefreshAuthHandler;
+use App\Modules\Auth\Domain\Dto\UserToken;
 use App\Modules\Auth\Domain\Entity\RefreshToken;
 use App\Modules\Auth\Domain\Repositories\RefreshTokenRepositoryInterface;
 use App\Modules\Auth\Infrastructure\Service\CreateUser;
@@ -32,7 +33,7 @@ class AuthController
 
         $user = $createUser->handle($formRequest);
 
-        $accessToken = $this->tokenService->issueAccessToken($user->id);
+        $accessToken = $this->tokenService->issueAccessToken(new UserToken($user->id, $user->email));
         $refreshToken = $this->tokenService->issueRefreshToken($user->id);
 
         $this->refreshTokenRepository->store(new RefreshToken(
@@ -61,7 +62,7 @@ class AuthController
             return new JsonResponse(['message' => 'Invalid credentials'], 401);
         }
 
-        $accessToken = $this->tokenService->issueAccessToken($authUser->user->id);
+        $accessToken = $this->tokenService->issueAccessToken(new UserToken($authUser->user->id, $authUser->user->email));
         $refreshToken = $this->tokenService->issueRefreshToken($authUser->user->id);
 
         $this->refreshTokenRepository->store(new RefreshToken(

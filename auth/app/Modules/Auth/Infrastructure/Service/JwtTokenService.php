@@ -9,6 +9,7 @@ use App\Modules\Auth\Domain\Dto\AccessToken;
 use App\Modules\Auth\Domain\Dto\RefreshToken;
 use App\Modules\Auth\Domain\Dto\RefreshTokenPayload;
 use App\Modules\Auth\Domain\Dto\TokenPayload;
+use App\Modules\Auth\Domain\Dto\UserToken;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -20,18 +21,20 @@ final class JwtTokenService implements TokenServiceInterface
         private GenerateUuidInterface $generateUuid,
     ) {}
 
-    public function issueAccessToken(int $userId): AccessToken
+    public function issueAccessToken(UserToken $userToken): AccessToken
     {
         $expiresAt = new \DateTimeImmutable('+15 minutes');
 
         $payload = [
-            'sub' => $userId,
+            'sub' => (string) $userToken->userId,
+            'email' => $userToken->email,
             'exp' => $expiresAt->getTimestamp(),
             'iat' => time(),
+            'roles' => [],
             'type' => 'access',
         ];
 
-        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256', 'sim1', ['kid' => 'sim1']);
 
         return new AccessToken($jwt, $expiresAt);
     }
@@ -44,13 +47,13 @@ final class JwtTokenService implements TokenServiceInterface
 
         $payload = [
             'jti' => $jti,
-            'sub' => $userId,
+            'sub' => (string) $userId,
             'exp' => $expiresAt->getTimestamp(),
             'type' => 'refresh',
         ];
 
 
-        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256', 'sim1', ['kid' => 'sim1']);
 
         return new RefreshToken($jwt, $jti, $expiresAt);
     }
