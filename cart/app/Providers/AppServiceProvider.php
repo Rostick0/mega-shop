@@ -39,11 +39,12 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Auth::viaRequest('jwt', function (\Illuminate\Http\Request $request) {
             try {
-                $jwt = new JwtTokenService(config('jwt.secret'), new IlluminateFacadeGenerateUuid());
+                $user = new \App\Modules\Shared\Infrastructure\Eloquent\UserModel();
 
-                $tokenPayload = $jwt->parseAccessToken($request->bearerToken() ?? '');
+                $user->id = $request->header('X-User-Id');
+                $user->email = $request->header('X-Email');
 
-                return \App\Modules\User\Infrastructure\Eloquent\UserModel::find((int) $tokenPayload->userId)->first();
+                return $user;
             } catch (\Exception $th) {
                 // Log::error($th);
                 return null;
