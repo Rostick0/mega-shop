@@ -52,12 +52,54 @@
     {
       "endpoint": "/carts",
       "method": "GET",
+      "input_headers": ["Authorization", "x-user-id", "x-email"],
+      "output_encoding": "no-op",
       "backend": [
         {
+          "encoding": "no-op",
           "url_pattern": "/api/carts",
           "host": ["http://cart-laravel.test-1:80"]
         }
-      ]
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "jwk_local_path": "/etc/krakend/config/settings/jwk.json",
+          "disable_jwk_security": true,
+          "kid": "sim1",
+          "propagate_claims": [
+            ["sub", "x-user-id"],
+            ["email", "x-email"]
+          ],
+          "operation_debug": true
+        }
+      }
+    },
+    {
+      "endpoint": "/carts",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "input_headers": ["Authorization", "x-user-id", "x-email"],
+      "backend": [
+        {
+          "encoding": "no-op",
+          "url_pattern": "/api/carts",
+          "host": ["http://cart-laravel.test-1:80"]
+        }
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "jwk_local_path": "/etc/krakend/config/settings/jwk.json",
+          "disable_jwk_security": true,
+          "kid": "sim1",
+          "propagate_claims": [
+            ["sub", "x-user-id"],
+            ["email", "x-email"]
+          ],
+          "operation_debug": true
+        }
+      }
     },
     {
       "endpoint": "/orders",
