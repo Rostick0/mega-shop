@@ -10,9 +10,15 @@ final class CartMapper
     public function toArray(Cart $cart): array
     {
         return [
-            'id' => $cart->getId(),
-            'owner' => $cart->getOwner(),
-            'items' => $cart->getItems()
+            'id'    => $cart->getId(),
+            'owner' => (string) $cart->getOwner(),
+            'items' => array_map(fn(CartItem $item) => [
+                'cart_id'        => $cart->getId(),
+                'product_id'     => $item->product_id,
+                'title_snapshot' => $item->title_snapshot,
+                'price_snapshot' => $item->price_snapshot,
+                'quantity'       => $item->quantity,
+            ], $cart->getItems()),
         ];
     }
 
@@ -27,7 +33,7 @@ final class CartMapper
             owner: $data['owner'],
             items: array_map(
                 fn($item) => new CartItem(
-                    cart_id: $item['cart_id'],
+                    cart_id: $data['id'],
                     product_id: $item['product_id'],
                     title_snapshot: $item['title_snapshot'],
                     price_snapshot: $item['price_snapshot'],

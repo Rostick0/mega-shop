@@ -79,7 +79,7 @@
       "endpoint": "/carts",
       "method": "POST",
       "output_encoding": "no-op",
-      "input_headers": ["Authorization", "x-user-id", "x-email"],
+      "input_headers": ["Content-Type", "Authorization", "x-user-id", "x-email"],
       "backend": [
         {
           "encoding": "no-op",

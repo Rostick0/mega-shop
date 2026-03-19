@@ -35,19 +35,21 @@ class Cart
         string $title_snapshot,
         string $price_snapshot,
         int $quantity,
-    ) {
-        // if ($key=array_f($this->items, fn ($el) => $el->product_id === $product_id)) {
-        //     array_slice($this->items, );
-        // }
+    ): void {
+        foreach ($this->items as $key => $item) {
+            if ($item->product_id === $product_id) {
+                $this->items[$key] = $item->withQuantity($item->quantity + $quantity);
+                return;
+            }
+        }
 
         $this->items[] = new CartItem(
-            cart_id: $this->id,
-            product_id: $product_id,
+            cart_id:        $this->id ?? '',
+            product_id:     $product_id,
             title_snapshot: $title_snapshot,
             price_snapshot: $price_snapshot,
-            quantity: $quantity
+            quantity:       $quantity,
         );
-        // $this->items;
     }
 
     /**

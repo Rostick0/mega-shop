@@ -12,13 +12,19 @@ class CartItem
         public readonly int $quantity,
     ) {}
 
-    public function setQuantity(int $quantity): void
+    public function withQuantity(int $quantity): self
     {
         if ($quantity <= 0) {
-            throw new \Exception('Quantity must be positive');
+            throw new \InvalidArgumentException('Quantity must be positive');
         }
 
-        $this->quantity = $quantity;
+        return new self(
+            cart_id:        $this->cart_id,
+            product_id:     $this->product_id,
+            title_snapshot: $this->title_snapshot,
+            price_snapshot: $this->price_snapshot,
+            quantity:       $quantity,
+        );
     }
 
     /**
