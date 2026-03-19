@@ -46,6 +46,7 @@ class OrderController
     public function store(StoreOrderRequest $request, CreateOrderHandler $handler)
     {
         $resource = $handler->execute(new CreateOrderDTO(
+            user_id: Auth::user()->id ?? null,
             email: Auth::user()->email ?? $request->input('email'),
             provider: $request->input('provider'),
         ));

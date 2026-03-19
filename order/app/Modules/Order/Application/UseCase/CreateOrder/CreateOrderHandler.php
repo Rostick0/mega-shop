@@ -2,7 +2,6 @@
 
 namespace App\Modules\Order\Application\UseCase\CreateOrder;
 
-use App\Modules\Auth\Application\Contract\CurrentUserProviderInterface;
 use App\Modules\Order\Application\Dto\CreateOrderDTO;
 use App\Modules\Shared\Application\Port\EventPublisherInterface;
 use App\Modules\Order\Domain\Entity\CartItem;
@@ -17,7 +16,6 @@ class CreateOrderHandler
     public function __construct(
         private CartApiInterface $cartApi,
         private OrderRepositoryInterface $orderRepository,
-        private CurrentUserProviderInterface $currentUserProvider,
         private EventPublisherInterface $eventPublisher,
     ) {}
 
@@ -28,7 +26,7 @@ class CreateOrderHandler
         $order = new Order(
             id: null,
             title: "Заказ номер ",
-            user_id: $this->currentUserProvider->get()->id ?? null,
+            user_id: $command->user_id,
             email: $command->email,
             amount: $cart->getTotal(),
             status: OrderStatusEnum::pending,
