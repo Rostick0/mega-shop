@@ -25,6 +25,10 @@ class CacheCartRepository implements CartRepositoryInterface
 
         $cart = Cache::get($keyCart);
 
+        if (!$cart) {
+            throw new \Exception('Cart is empty'); 
+        }
+
         $data = json_decode($cart, true);
 
         $cartArray = [
